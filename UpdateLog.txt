@@ -1,0 +1,333 @@
+Weekly Report (June 3 -> July 1)
+
+- restructure the code base to separate files
+- Loading diagram element using Angular Controller instead of traditional way (DiagramController, buttonController, SearchController)
+- Using Dependency Injection(DI) in Angular 's structure via "DiagramService"
+- Using Angular Bootstrap instead foundation
+
+haven't finished:
+
+- I think GoJs 's listener events cannot be integrated into Angular , because these events are invoked in the canvas created by GoJS in runtime which
+can only caught by GOJs's API
+
+- Some of the GoJs 's events still need to use global variables, i'm still trying to make these events work without using global variables. 
+
+- Trying to use modal( of bootstrap) as context menu of Gojs
+
+
+
+
+**********************************************************************************************************
+Weekly Report (May 17 -> June 3)
+- restructure the code base to separate files( you can see in the folder thesis/app)
+
+- My idea about button is building two types of directives fbutton is define a function button and another directive to determin which function 
+ for example: zoom in button will be <fbutton zoomin></fbutton> and zoom out button will be <fbutton zoomout></fbutton>
+ with this we can put the button at any div without in the limit ng-controller (but turn out not working with the ng-click)
+ 
+- about the canvas i think the way it can be in the service which can be injected in other controllers is more feasible
+
+- all the files demo.js, settings.js, palette.js are the basics for the diagram , so i just separate them into files to make them clear and easy to control, 
+any new function relevent to the view will be implemented within angular
+
+- view use case: use routeProvider/routeParams/ resolve
+**********************************************************************************************************
+Feature request (May 13, 2013)
+
+-FOCUS OF THESIS: BUILDING A COMPLEX (RIA) WEB APPLICATION: 
+    + Using software engineering concepts from Angular (Dependency Injection, Controllers, Services, Directives, etc)
+    + Integrate GoJS
+    + Explore CoffeeScript
+    + Prove that the traditional way of coding is no longer appropriate
+
+MAIN CONTENTS
+- Re-structure code base to modularize components
+- Use directives/services/controllers properly
+
+
+STARTING POINT
+- Zoom in/out and other buttons: Directives/ Controllers? -> controller for a div/button
+- 1 controller 1 file (services/directives)
+- Convert Canvas into a directive
+	+ this directive has a bunch of interface functions, that call corresponding controllers, which in turn call GoJS functions to interact with the diagram (diagram can potentially be a model in a service)
+	+ other controllers (buttons/editor's area) interact with Canvas through those interface functions
+
+
+
+
+**********************************************************************************************************
+
+
+
+Weekly Report( May 13 -> May 17)
+Top-bottom canvas
+Fix Split flow 
+autofocus editor area
+fix Save as usecase ( just display the icon, the links haven't been dealt with)
+**********************************************************************************************************
+Feature request (May 13, 2013)
+Top-bottom canvas (done)
+Relevant functionalities (scrolling UP automatically when a node is created instead of RIGHT)
+Save as usecase -> icon
+Go to use case
+Contextual menu (LESS)
+Zooming animation
+Restructure the page layout (left panel with text, right panel with canvas - width smaller than height)
+**********************************************************************************************************
+Weekly Report (April 26 - May 3)
+
+Split flow Top-bottom canvas ( demo.html)
+try (Less, CoffeeScript) (test.html)
+**********************************************************************************************************
+Feature request (April 3, 2013)
+Top-bottom canvas
+Relevant functionalities
+Save as usecase -> icon
+Go to use case
+Angular's deep linking / history management
+URL: #
+http://abc.com/#/usecase12
+Framework exploration (Less, Coffeescript, Bootstrap)
+Convert some existing GoJS JS functions to Coffeescript
+*********************************************************************************************************
+Weekly Report (April 3 - April 12)
+
++ 1 port for multiple links
++ try building new menu styles using html elements
++ using databiding, model, controller, view for the search box
+**********************************************************************************************************
+Feature request (April 3, 2013)
++ 1 port for multiple links
++ menu style
++ TODOs left from last weeks
+
++ work on separation of concerns/design patterns
+
++ AngularJS/EmberJS/KnockoutJS: compatibility, data binding, embed in a canvas view into the application, sample application, ask admin of GoJS, etc.
+
+
+**********************************************************************************************************
+
+Weekly Report (Mar 21 - Apr 3)
+
++ Split a flow: Rework on the coordinates + cut the link
++ disable the "bridging" function 
++ Change type of a node on canvas from context menu (replace it by another one) ( temporarily: the type of that node is changed into the current defaultPattern)
++ Move ports onto the image, instead of based on the text size
++ Drag a port to an empty spot on canvas will create a new node (and link)
++ Provide APIs for most of the functions: add a new block, replace a block, connect 2 nodes, check the existance of a link between nodes, etc. ( but i haven't known which Design Pattern is suitable in this case)
++ Add waypoint (temporary i make the link reshapable with 1 or 2 waypoint, i asked the admin and he told me that there will be a feature help to add
+more waypoint in ver 1.2 which will be completed in months :D )
+**********************************************************************************************************
+Feature request (Mar 21, 2013)
+
++ Split a flow: Rework on the coordinates + cut the link (done)
++ Change type of a node on canvas from context menu (replace it by another one) (done)
++ Provide APIs for most of the functions: add a new block, replace a block, etc. (very important!!!, look at using Design Patterns to re-organize the code base)
++ Move ports onto the image, instead of based on the text size (done)
++ BUG: 2 links can be created between 2 nodes (1 link from the port, 1 link dynamically)
++ TODOs left from last weeks
++ disable the "bridging" function (done)
+
+**********************************************************************************************************
+
+Weekly Report (March 15 - March 21)
+
++ Switch between 2 modes: select/move (done) ( Leftmouse: dragSelecting and Righmouse: move the canvas)
++ Move group name further down (done)
++ Right click on a link, choose "Insert a new block here" (done)
++ Showing Arrow on the links (done)
++ BUG: Cannot drop a set of nodes (done)
++ Right click and "split a flow": Moving all the nodes to the right of that point (right block), align them with the leftmost node of the left block. (done)
+
+**********************************************************************************************************
+Feature request (Mar 11, 2013)
+
++ Switch between 2 modes: select/move (done)
++ Move group name further down (done)
++ Right click on a link, choose "Insert a new block here" (done)
++ Showing Arrow on the links (done)
++ BUG: Cannot drop a set of nodes (done)
++ Right click and "split a flow": Moving all the nodes to the right of that point (right block), align them with the leftmost node of the left block.(done)
++ Drag a port to an empty spot on canvas will create a new node (and link) (done)
++ Use a different context menu format/style
++ Connect directly 2 nodes, not through port (not urgent)
++ Add waypoint (not urgent) ( wait for the ver 1.2)
+
+
+**********************************************************************************************************
+
+Weekly Report (March 11 - March 15)
+
+File: Demo.html
+
++ BUG: overlapping a node on another node (in a group) creates lots of accidental links to itself???!!!??  (fixed)
++ Auto make 2 "bridge" links to replace 1 old link: The bridge links need to be "temporary" only. The previous link should be restored when the node is out of the threshold zone. ( still have some problem with the node dragged from the palette, the node is already in the diagram is ok)
+
+**********************************************************************************************************
+Feature request (Mar 11, 2013)
+
+File: Demo.html
+
+-Remove temporarily multi palette (done)
+-remove inline help text for aggregator (done)
+-same coordinate for comment block (done)
+-Move block's "add" function to its contextual menu (done)
+-Move canvas/Select canvas confusion? 
+-palette moved the right (done)
+-default grid on (done)
+
+-BUG: a node created when dragged close to another: temporary links not deleted properly
+-BUG: overlapping a node on another node (in a group) creates lots of accidental links to itself???!!!??
+-Auto make 2 "bridge" links to replace 1 old link: The bridge links need to be "temporary" only. The previous link should be restored when the node is out of the threshold zone.
+
+**********************************************************************************************************
+Weekly Report (March 1 - March 10)
+
++ Exclude a node (or a group of nodes) from a group by right clicking 
+		The context menu only show when right clicking on a node which is already in a group
+		Auto remove the empty group
++ Save as use case: select a set of nodes, right click and choose Save as use case. All of the nodes are grouped, minimized
+
++ Auto add link when a node dragged close to another 
+	the link won't be displayed when 2 nodes are farther than the threshold
+	the link needs to be created on the most appropriate side
+	use a lighter color for the suggested link
+	
++  Auto make 2 "bridge" links to replace 1 old link when a node is dragged onto an existing link 
+	the link is auto cut off for no reason??!!	(fixed)
+
+**********************************************************************************************************
+Weekly Report ( Feb 22 - March 1)
+
++ Add comment nodes on canvas
++ Navigator
++ Editable node's label
++ switch between drag the whole diagram  <-> drag a box to choose
++ multi palettes
++ inline help text
++ Splitter
++ Tabs
++ TODO: auto add link between the newly added node and the last one to its left. 
+
+**********************************************************************************************************
+Feature request (Feb 22, 2013): 
+	- TODOs left from last week
+	- Allowing users to add comments (text) on canvas
+	- Display inline help text (custom elements) next to the palette's items
+	- Category selector for palette (multi palettes displayed according to the chosen category)
+	- Save as use case: select a set of nodes, right click and choose Save as use case. All of the nodes are grouped, minimized, the icon is changed to a "queue" icon".
+	- Editable node's label 
+**********************************************************************************************************
+Weekly Report (Feb 13 - Feb 22)
+
++ Auto addition of a node from the search palette
+	TODO: auto add link between the newly added node and the last one to its left. (done)
+
++ Auto scroll the canvas when adding a new node : seem it automatically scroll for us
+	TODO: not me :) 
+
++ Auto add link when a node dragged close to another 
+	TODO: the link won't be displayed when 2 nodes are farther than the threshold (done)
+	TODO: the link needs to be created on the most appropriate side (done)
+	TODO: use a lighter color for the suggested link
+
++  Auto make 2 "bridge" links to replace 1 old link when a node is dragged onto an existing link ( i haven't made it temporary, the links will be fixed)
+	BUG: the link is auto cut off for no reason??!!
+	TODO: make bridge links even for multiple nodes
+
++ Drag a node into a group 's region will automatically adds that node into the group ( but drag the group to cover the node will not do the add-action)
+	TODO: Exclude a node (or a group of nodes) from a group by right clicking (done)
+
++ Annoy relinking : seem fine with me i tested and it's ok
+
++ Choose type of pattern: i tested and it works ( i just test on chrome & Firefox)
+
++ Navigator: it only works when you drag an item from the palette, but i don't find much support from this library to build a navigator like in drawio , so 
+i temporarily disable this feature
+
++ Cut/Copy and Paste keeping the same spatial position: i just fixed this
+
++ I just add some new features: 
+	+ Zoom by the mouse's wheel
+	+ Choose layout (when choose a layout we can rearrange(re-layout) items easier)
+	+ Auto update JSON format ( the diagram changes -> the JSON format changes)
+
+**********************************************************************************************************
+Feature request (Feb 13, 2013)
+
++ Auto addition of node from the search palette:
+	- when typing to search for items, pressing Enter will automatically add the most relevant (or the first relevant in the filtered list) to the canvas.
+	- the item to be auto-added to the canvas will be placed to the right of the rightmost item of the current diagram.
+	- the canvas will scroll a bit to the right (or add a bit more margin space to the right) to ensure visibility of the new node.
+
++ Auto scroll the canvas when adding a new node
+	- e.g. when dragging a new item to the right border of the canvas, the canvas should scroll to the right automatically (pushing the boundary of the canvas to the right).
+ 
++ Auto add link when 1 node is dragged close to another (choose a threshold)
+	-e.g.1. as an item is being dragged from the palette onto the canvas, if it moves close to an existing node, a link between the two will be automatically created.
+	-e.g.2. dragging an existing node A close to another existing node B will create a link between them
+	-the link should only be a suggestion, meaning that it'll be temporarily created and shown in a light gray color. If the user continues to drag his node away from the other, the link will not be created and shown.
+
++ Auto make 2 "bridge" links to replace 1 old link when a node is dragged onto an existing link
+	-dragging a node C and positioning it in the middle of a link between node A and node B will do the following: 1) delete the link between A and B, 2) create link between A and C, 3) create link between C and B.
+	-these links should be only temporarily created, as a suggestion (with a light gray color, e.g.). If the user moves node C out of zone, the current link between A and B should be restored.
+
++ Build a data model/class for each node with properties/actions. It'll enable us to customize the node easier and add further configuration to the node (e.g. color, label, technical description, etc.).
+
++ From last week: Annoying relinking between nodes in a group doesn't seem to be properly fixed?
+
++ From last week: Choose type of pattern that double click to create: not sure what it does! I don't see any effect.
+
++ From last week: Navigator ( click on a node to change the diagram's position): why does the navigator's thumbnail diagram not have the same layout as the big one?
+
++ Bug?: when cutting/copying a set of nodes and pasting it somewhere else, their spatial relations and positions are not kept.
+
+
+**********************************************************************************************************
+
+
+Weekly Report (Feb 2nd -> Feb 8th)
+
+Changes: 
+	save&load:  model <-> JSON
+	auto zoom to fit
+	Fix annoying relinking between nodes in a group
+	Search for items in palette
+	Updating command UI (disable command buttons like copy, cut, paste, undo, redo when not needed)
+	Update hotkey for command ( zoom in/out (+/-) ;  up/down/left/right to move the diagram)
+	Navigator ( click on a node to change the diagram's position)
+	choose type of pattern that double click to create
+
+**********************************************************************************************************
+update ver 1.2
+
+fix the links between ports  (work correctly)
+add some of the EIPs 
+
+**********************************************************************************************************
+update ver 1.1
+
+tooltip on canvas(show how many model? how many link?)
+tooltip on node ( show the node is top-level or member of anygroup)
+tooltip on Link (from which node to which node)
+tooltip on Group( how many member, how many link)
+Context menu on canvas/node (right click)
+double click on canvas to create a new node
+expand button of a group 
+Rename a group
+a button to generate a new node connected to the selected node
+
+**********************************************************************************************************
+ver 1.0
+
+Draw shape ( by click, by dragdrop)
+create ports on shapes
+create link by dragdrop ( not working properly)
+export image by size
+zoom in/out
+select all (Ctrl - A)
+Cut/Copy/Paste/Delete (Ctrl - X/C/V)
+Group/UnGroup( Ctrl-G / Ctrl-Shift-G)
+Undo/Redo (Ctrl-Z / Ctrl-Y)
+EnableGrid/DisableGrid
