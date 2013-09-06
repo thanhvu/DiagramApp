@@ -2,21 +2,20 @@
 #SaveBoard
 {float: left;width: 90%; height:250px; margin:10px;padding:10px;border:1px solid #aaaaaa; -moz-border-raius: 10px;
     -webkit-border-radius: 10px;}
-#myPalette ,#toolbar
-{float: left;width: 780px; height:200px; margin:10px;padding:10px;border:1px solid #aaaaaa; -moz-border-radius: 10px;
+#myPalette
+{float: left;width: 1000px; height:200px; margin:10px;padding:10px;border:1px solid #aaaaaa; -moz-border-radius: 10px;
     -webkit-border-radius: 10px;}
 #navigator
-{ float: left; width:400px; height:200px; margin:10px;padding:10px;border:1px solid #aaaaaa; -moz-border-radius: 10px;
+{ float: left; width:200px; height:200px; margin:10px;padding:10px;border:1px solid #aaaaaa; -moz-border-radius: 10px;
     -webkit-border-radius: 10px;}
 #myDiagram
-{ float: left ; width:500px; height:700px; margin:10px;padding:10px;border:1px solid #aaaaaa;-moz-border-radius: 10px;
-    -webkit-border-radius: 10px;}
-#historyTab
 { float: left ; width:700px; height:700px; margin:10px;padding:10px;border:1px solid #aaaaaa;-moz-border-radius: 10px;
     -webkit-border-radius: 10px;}
-#infobar
-{ float: left ; width:95%; height:650px; margin:10px;padding:10px;border:1px solid #aaaaaa;-moz-border-radius: 10px;
+#leftspan
+{ float: left ; width:500px; height:700px; margin:10px;padding:10px;border:1px solid #aaaaaa;-moz-border-radius: 10px;
     -webkit-border-radius: 10px;}
+#editor
+{  border: solid 1px gray; font-family:Monospace; font-size:11px; }
 #myImages
 {float:left; width:800px; height:500px; margin:10px;padding:10px;border:1px solid #aaaaaa;-moz-border-radius: 10px;
     -webkit-border-radius: 10px;}

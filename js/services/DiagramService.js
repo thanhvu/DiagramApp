@@ -2,10 +2,12 @@
 
 app.service("DiagramService",function(RuntimeService){
 
-    var myDiagram , $$,Palette,DefaultPattern,myPartContextMenu,navigator;
+    var myDiagram , $$,Palette,DefaultPattern,myPartContextMenu,navigator,undoDisplay;
     THRESHOLD =12500;
-    //------------------------------------Load Basic components
+    var undoModel;
     var changedLog = document.getElementById("modelChangedLog");
+    var editToRedo = null; // a node in the undoDisplay
+
     var editList = [];
     //--------------------------------------------------------------APIs
 
@@ -32,7 +34,8 @@ app.service("DiagramService",function(RuntimeService){
                 fromLinkableDuplicates: false, toLinkableDuplicates: false
             });
     }
-    function nodeInfo(d) {  // Tooltip info for a node data object
+    // Tooltip info for a node data object
+    function nodeInfo(d) {
         str = "Node: " + d.text + "\n";
         if (d.group)
             str += "member of " + d.group;
@@ -384,6 +387,7 @@ app.service("DiagramService",function(RuntimeService){
         return false;
 
 
+
     }
     function GetLinkFromKeys(FromKey,ToKey)
     {
@@ -453,17 +457,17 @@ app.service("DiagramService",function(RuntimeService){
     function NodeArray()
     {
         NodeArr = new Array();
-        NodeArr[0]={category: "pic", text: "aggregator",img: "images/aggregator.png",des:"Used to combine a number of messages together into a single message"};
-        NodeArr[1]={category: "pic", text: "delay",img: "images/delay.png",des: "Allows delaying the delivery of messages to some destination"};
-        NodeArr[2]={category: "pic", text: "messagefilter",img: "images/messagefilter.png",des: "A special kind of Message Router that eliminates undesired messages from a channel based on a set of criteria"};
-        NodeArr[3]={category: "pic", text: "router",img: "images/router.png",des:"Allows you to route messages to a given destination based on the contents of the message exchanges"};
-        NodeArr[4]={category: "pic", text: "when",img: "images/when.png",des:""};
-        NodeArr[5]={category: "pic", text: "recipient list",img: "images/recipientlist.png",des:"The Recipient List allows to route messages to a number of dynamically specified recipients"};
-        NodeArr[6]={category: "pic", text: "messagetranslator",img: "images/messagetranslator.png",des:"A special filter to translate one data format into another"};
-        NodeArr[7]={category: "pic", text: "resequencer",img: "images/resequencer.png",des:"Allows you to reorganise messages based on some comparator"};
+        NodeArr[0]={category: "pic", text: "aggregator",img: "img/aggregator.png",des:"Used to combine a number of messages together into a single message"};
+        NodeArr[1]={category: "pic", text: "delay",img: "img/delay.png",des: "Allows delaying the delivery of messages to some destination"};
+        NodeArr[2]={category: "pic", text: "messagefilter",img: "img/messagefilter.png",des: "A special kind of Message Router that eliminates undesired messages from a channel based on a set of criteria"};
+        NodeArr[3]={category: "pic", text: "router",img: "img/router.png",des:"Allows you to route messages to a given destination based on the contents of the message exchanges"};
+        NodeArr[4]={category: "pic", text: "when",img: "img/when.png",des:""};
+        NodeArr[5]={category: "pic", text: "recipient list",img: "img/recipientlist.png",des:"The Recipient List allows to route messages to a number of dynamically specified recipients"};
+        NodeArr[6]={category: "pic", text: "messagetranslator",img: "img/messagetranslator.png",des:"A special filter to translate one data format into another"};
+        NodeArr[7]={category: "pic", text: "resequencer",img: "img/resequencer.png",des:"Allows you to reorganise messages based on some comparator"};
         NodeArr[8]={category: "Comment", text: "comment", img:"",des:""};
-        NodeArr[9]={category: "pic", text: "queue",img: "images/queue.png",des:""};
-        NodeArr[10]= {category: "pic", text: "CXF",img: "images/endpoint.png",des:"The cxf component provides integration with Apache CXF for connecting to JAX-WS services hosted in CXF"};
+        NodeArr[9]={category: "pic", text: "queue",img: "img/queue.png",des:""};
+        NodeArr[10]= {category: "pic", text: "CXF",img: "img/endpoint.png",des:"The cxf component provides integration with Apache CXF for connecting to JAX-WS services hosted in CXF"};
         return NodeArr;
     }
     function partContextMenu($, DefaultPattern)
@@ -761,8 +765,10 @@ app.service("DiagramService",function(RuntimeService){
            return Palette;
        },
        getGoMake : function(){
-
-            return $$;
+           return $$;
+       },
+       getUndoDisplay : function(){
+        return undoDisplay;
        },
        Init : function(){
            myDiagram = new go.Diagram("myDiagram")  // create a Diagram for the DIV HTML element
@@ -777,6 +783,7 @@ app.service("DiagramService",function(RuntimeService){
            navigator= new go.Overview("navigator")
            navigator.observed = myDiagram
        },
+
 
     //load Node Template
     LoadNodeTemplate : function ($$)
@@ -1292,9 +1299,9 @@ app.service("DiagramService",function(RuntimeService){
            });
 
    },
-    // notice whenever a transaction or undo/redo has occurred
 
-    addChangedListener : function (myDiagram){
+
+    addChangedListener : function (myDiagram,undoDisplay){
         myDiagram.model.addChangedListener(function(e) {
 
             if (e.change == go.ChangedEvent.Transaction
@@ -1303,7 +1310,7 @@ app.service("DiagramService",function(RuntimeService){
                 document.getElementById("mySavedModel").textContent = myDiagram.model.toJson();
 
             }
-            // if (e.change == go.ChangedEvent.Transaction && e.propertyName
+
 
             // Add entries into the log
             var changes = e.toString();
@@ -1313,22 +1320,24 @@ app.service("DiagramService",function(RuntimeService){
 
             // Modify the undoDisplay Diagram
             if (e.propertyName === "CommittedTransaction") {
-//                if (editToRedo != null) {
-//                    // remove from the undo display diagram all nodes after editToRedo
-//                    for (var i = editToRedo.data.index+1; i < editList.length; i++) {
-//                        undoDisplay.remove(editList[i]);
-//                    }
-//                    editList = editList.slice(0, editToRedo.data.index);
-//                    editToRedo = null;
-//                }
+                if (editToRedo != null) {
+                    // remove from the undo display diagram all nodes after editToRedo
+                    for (var i = editToRedo.data.index+1; i < editList.length; i++) {
+                        undoDisplay.remove(editList[i]);
+                    }
+                    editList = editList.slice(0, editToRedo.data.index);
+                    editToRedo = null;
+                }
 
                 var tx = e.object;
                 var txname = (tx !== null ? e.object.name : "");
                 var parentData = {text: txname, tag: e.object, index: editList.length - 1};
                 undoModel.addNodeData(parentData)
+
                 var parentKey = undoModel.getKeyForNodeData(parentData);
+
                 var parentNode = undoDisplay.findNodeForKey(parentKey);
-                editList.push(parentNode);
+
                 if (tx !== null) {
                     var allChanges = tx.changes;
                     var itr = allChanges.iterator;
@@ -1448,8 +1457,10 @@ app.service("DiagramService",function(RuntimeService){
         }
     },
     DefineUndoDiagram : function($$){
-           var undoDisplay =
-               $$(go.Diagram, "undoDisplay",
+
+
+        undoDisplay =
+               $$(go.Diagram, "undoDisplayCanvas",
                    { allowMove: false,
                        maxSelectionCount: 1 });
 
@@ -1464,7 +1475,7 @@ app.service("DiagramService",function(RuntimeService){
                        $$(go.TextBlock, {margin: 2},
                            new go.Binding("text", "text"))));
 
-           undoDisplay.linkTemplate = $(go.Link);  // not really used
+           undoDisplay.linkTemplate = $$(go.Link);  // not really used
 
            undoDisplay.layout =
                $$(go.TreeLayout,
@@ -1480,10 +1491,13 @@ app.service("DiagramService",function(RuntimeService){
                        setsChildPortSpot: false,
                        arrangementSpacing: new go.Size(2, 2)
                    });
-           var undoModel = new go.GraphLinksModel();  // initially empty
+
+           undoModel = new go.GraphLinksModel();  // initially empty
            undoModel.isReadOnly = true;
            undoDisplay.model = undoModel;
+
        },
+
 
     mouseDragOver : function(RuntimeService,myDiagram){ myDiagram.mouseDragOver=function(e){
         THRESHOLD = 12500;
@@ -1613,6 +1627,8 @@ app.service("DiagramService",function(RuntimeService){
 
 
     }}
+
+
 
     }
 

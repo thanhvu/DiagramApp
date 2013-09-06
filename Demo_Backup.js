@@ -15,7 +15,7 @@ tempLinkArray = new Array();
 tempExternalLinkArray = new Array();
 
 
- DefaultPattern = {category: "pic", text: "aggregator",img: "images/aggregator.png",des:"Used to combine a number of messages together into a single message"};
+ DefaultPattern = {category: "pic", text: "aggregator",img: "img/aggregator.png",des:"Used to combine a number of messages together into a single message"};
 //-----------------------------------------------------------------------------------------------------------------
 //constant
 THRESHOLD = 12500

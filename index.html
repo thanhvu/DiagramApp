@@ -1,7 +1,101 @@
 
 
 <html ng-app="app">
+<!--navigation bar-->
+<div id="navbar-app" class="navbar navbar-static">
+    <div class="navbar-inner">
+        <div class="container" style="width: auto;">
+            <!--app 's name-->
+            <a class="brand" href="#">EIP_Diagram</a>
+            <!--menu-->
+            <ul class="nav" role="navigation">
+                <!--file menu-->
+                <li class="dropdown">
+                    <a id="file-menu" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">File </a>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="drop1">
+                        <li class="dropdown-submenu">
+                            <a tabindex="-1" href="#">New</a>
+                            <ul class="dropdown-menu">
+                                <li><a tabindex="-1" href="#">Blank Diagram</a></li>
+                                <li><a tabindex="-1" href="#">Copy of Diagram</a></li>
+                                <li role="presentation" class="divider"></li>
+                                <li><a tabindex="-1" href="#">From Template</a></li>
+                            </ul>
+                        </li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="http://google.com">Open</a></li>
+                        <li role="presentation" class="divider"></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#anotherAction">Save</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Save as</a></li>
+                        <li role="presentation" class="divider"></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Import</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Export</a></li>
+                    </ul>
+                </li>  <!--end of file menu-->
+                <!--Edit menu-->
+                <li class="dropdown">
+                    <a href="#" id="edit-menu" role="button" class="dropdown-toggle" data-toggle="dropdown">Edit </a>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Undo</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Redo</a></li>
+                        <li role="presentation" class="divider"></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Cut</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Copy</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Paste</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Delete</a></li>
+                        <li role="presentation" class="divider"></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Select All</a></li>
+                    </ul>
+                </li><!--end of edit menu-->
+                <!--view menu-->
+                <li class="dropdown">
+                    <a href="#" id="view-menu" role="button" class="dropdown-toggle" data-toggle="dropdown">View </a>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Zoom To Fit</a></li>
+                        <li role="presentation" class="divider"></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">25%</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">50%</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">75%</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">100%</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">150%</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">200%</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">400%</a></li>
+                        <li role="presentation" class="divider"></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Zoom In</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Zoom Out</a></li>
+                    </ul>
+                </li><!--end of view menu-->
+                <!--Arrange menu-->
+                <li class="dropdown">
+                    <a href="#" id="Arrange" role="button" class="dropdown-toggle" data-toggle="dropdown">Arrange </a>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
+                        <li class="dropdown-submenu">
+                            <a tabindex="-1" href="#">Layout</a>
+                            <ul class="dropdown-menu">
+                                <li><a tabindex="-1" href="#">Normal</a></li>
+                                <li><a tabindex="-1" href="#">Grid</a></li>
+                                <li role="presentation" class="divider"></li>
+                                <li><a tabindex="-1" href="#">Tree</a></li>
+                                <li><a tabindex="-1" href="#">Digraph</a></li>
+                                <li role="presentation" class="divider"></li>
+                                <li><a tabindex="-1" href="#">Circular</a></li>
 
+                            </ul>
+                        </li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Re-layout</a></li>
+                        <li role="presentation" class="divider"></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Group</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">UnGroup</a></li>
+                        <li role="presentation" class="divider"></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Remove from Group</a></li>
+
+
+                    </ul>
+                </li> <!--end of arrange menu-->
+            </ul> <!--/end of menu-->
+
+        </div>
+    </div>
+</div> <!-- /end-of-nav-bar-->
 
 <!--button -->
 <ZoomOut></ZoomOut>
@@ -44,20 +138,32 @@
       </zippy>
       <!--end of zippy-->
   </div>
-    <!--Diagram's navigator-->
-    <div id="navigator" style="border: solid 1px blue; "></div>
+    <!--Diagrams navigator-->
+    <div id="navigator" style="border: solid 1px gray; "></div>
     <!--Palette-->
-    <div id="myPalette" style="border: solid 1px blue; "></div>
+    <div id="myPalette" style="border: solid 1px gray; "></div>
 
     </span>
     <span id="diagramSpan">
     <!--Editor-->
-    <!--<div autofocus placeholder="Editor \' s area...." id="infobar"   style="border: solid 1px blue;overflow:scroll " wrap="SOFT" >-->
-    <tabhistory></tabhistory>
+    <!--<div autofocus placeholder="Editor \ s area...." id="infobar"   style="border: solid 1px gray;overflow:scroll " wrap="SOFT" >-->
+    <!--<tabhistory></tabhistory>-->
     <!--<ng-view></ng-view>-->
+    <div id="leftspan" >
+
+
+        <div id="history"></div> <div id="modelChangedLog" style="height:30%;border: solid 1px gray; font-family:Monospace; font-size:11px; overflow:scroll"></div>
+        <div id="undoDisplayCanvas" style="height:30%; border: solid 1px gray"></div>
+        <textarea autofocus placeholder="Editor \ s area...." id="editor"   style=" height:30%;width:100%;border: solid 1px gray ;overflow:scroll " wrap="SOFT" ></textarea>
+
+
+
+    </div>
 
     <!--Diagram-->
-    <div id="myDiagram" style="border: solid 1px blue; "></div>
+    <div id="myDiagram" style="border: solid 1px gray; "></div>
+
+
    </span>
 
 </div>
@@ -71,7 +177,7 @@
 Width: <input id="widthInput" value="700" />
 Height: <input id="heightInput" value="960" />
 <!-- Color: <input  id="ColorInput" type="color"/> -->
-<!-- button id="makeImages">Generate images for printing</button>
+<!-- button id="makeImages">Generate img for printing</button>
 </div>
 <div id="myImages">
 </div> -->
@@ -82,22 +188,19 @@ Height: <input id="heightInput" value="960" />
 <link rel="stylesheet" type="text/css" href="css/style.css">
 <link rel="stylesheet" type="text/css" href="css/angular-ui.css">
 <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-<!--<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">-->
+
 <!--include JavaScript files -->
 <!--Vendors-->
 <script src="js/Vendors/angular.js"></script>
-<!--<script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js" type="text/javascript"></script>-->
+<!--<script src="js/vendors/bootstrap.min.js"></script>-->
 <script src="js/Vendors/ui-bootstrap-tpls-0.5.0.min.js"></script>
-<script src="js/Vendors/jquery-ui-1.10.1.custom.min.js"></script>
+<!--<script src="js/Vendors/jquery-ui-1.10.1.custom.min.js"></script>-->
 <script type="text/javascript" src="js/Vendors/go-debug.js"></script>
 
 <!--Diagram app-->
 <script type="text/javascript" src="app.js"></script>
-<script type="text/javascript" src="js/directives/firstLoadDirectives.js"></script>
 <script type="text/javascript" src="js/services/DiagramService.js"></script>
-
 <script type="text/javascript" src="js/services/RunTimeService.js"></script>
-
 <script type="text/javascript" src="js/controllers/ButtonController.js"></script>
 <script type="text/javascript" src="js/controllers/DiagramController.js"></script>
 <script type="text/javascript" src="js/directives/Directives.js"></script>

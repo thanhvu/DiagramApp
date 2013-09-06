@@ -24,6 +24,8 @@ files = [
     'js/directives/*.js',
 //    services
     'js/services/*.js',
+    //angular ui
+    'js/Vendors/ui-bootstrap-tpls-0.5.0.min.js',
      //test
     'test/**/**/*.js'
 ];

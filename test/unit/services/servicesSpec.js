@@ -25,7 +25,8 @@ describe('DiagramService unit test',function(){
     //check to see if it does what it's supposed to do
     it('should initialize important variables',function(){
         var myDiagram;
-        mockSvc.Init();
+//        mockSvc.Init();
+
 
     })
 

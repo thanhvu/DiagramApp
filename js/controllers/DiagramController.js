@@ -5,24 +5,23 @@ app.controller("DiagramCtrl",['$scope','DiagramService','RuntimeService',functio
     $$ = DiagramService.getGoMake();
     Init();
 
-
-
     function Init()
     {
-
+        DiagramService.DefineUndoDiagram($$)
         DiagramService.LoadNodeTemplate($$)
         DiagramService.LoadLinkTemplate()
         DiagramService.LoadGroupTemlate()
         DiagramService.ContextMenu()
         DiagramService.LoadPalette()
         DiagramService.LoadSettings()
+        undoDisplay = DiagramService.getUndoDisplay();
         DiagramService.ExternalObjectsDroppedListener(RuntimeService, myDiagram)
-        DiagramService.addChangedListener(myDiagram)
+        DiagramService.addChangedListener(myDiagram,undoDisplay)
         DiagramService.mouseDrop(RuntimeService,myDiagram)
         DiagramService.mouseDragOver(RuntimeService,myDiagram)
         DiagramService.SetCustomLinkingTool()
         DiagramService.SetCustomPanningTool()
-        DiagramService.DefineUndoDiagram($$)
+
     }
 
     $scope.list = DiagramService.getNodeArray();
