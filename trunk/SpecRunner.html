@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+    <!-- jasmine -->
+    <script src="test/lib/jasmine.js"></script>
+
+
+
+    <!-- jasmine's html reporting code and css -->
+    <script src="test/lib/jasmine-html.js"></script>
+    <link rel="stylesheet" type="text/css" href="test/lib/jasmine.css">
+
+
+    <!-- angular itself -->
+    <script src="test/lib/angular.js"></script>
+
+    <!-- angular's testing helpers -->
+    <script src="test/lib/angular-mocks.js"></script>
+
+    <!-- your angular app code -->
+    <script src="app/app.js"></script>
+
+    <!-- your Specs (tests) -->
+    <script src="test/unit/directives/buttonSpec.js"></script>
+
+    <!--angular ui bootstrap-->
+    <script src="app/js/Vendors/ui-bootstrap-tpls-0.5.0.min.js"></script>
+
+    <!--mongolab-->
+    <script src="app/js/Vendors/MongoLabModule.js"></script>
+    <!--ng-resource-->
+    <script src="app/js/Vendors/angular-resource.min.js"></script>
+
+
+    <script type="text/javascript" src="app/js/Vendors/go-debug.js"></script>
+
+    <!--Diagram app-->
+    <script type="text/javascript" src="app/js/services/DiagramService.js"></script>
+    <script type="text/javascript" src="app/js/services/RunTimeService.js"></script>
+    <script type="text/javascript" src="app/js/services/NodesService.js"></script>
+
+    <script type="text/javascript" src="app/js/directives/Directives.js"></script>
+    <script type="text/javascript" src="app/js/controllers/ButtonController.js"></script>
+    <script type="text/javascript" src="app/js/controllers/DiagramController.js"></script>
+    <script type="text/javascript" src="app/js/controllers/navigationBarController.js"></script>
+
+</head>
+<body>
+<!-- bootstrap jasmine! -->
+<script>
+    var jasmineEnv = jasmine.getEnv();
+
+    // Tell it to add an Html Reporter
+    // this will add detailed HTML-formatted results
+    // for each spec ran.
+    jasmineEnv.addReporter(new jasmine.HtmlReporter());
+
+    // Execute the tests!
+    jasmineEnv.execute();
+</script>
+</body>
+</html>

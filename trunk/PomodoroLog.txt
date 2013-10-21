@@ -1,0 +1,60 @@
+Log
+15 Oct
+1st Pomodoro : add wijmo + find out how to use splitter
+2nd Pomodoro : splitter added
+3rd Pomodoro : splitter adjustment
+4th Pomodoro : splitter adjustment
+5th Pomodoro : add accordion
+6th Pomodoro : choose between wiji's directives or bootstrap
+7th Pomodoro : Move all canvases to the splitter
+
+16 Oct
+
+1st Pomodoro : Continue moving parts to the splitter + splitter adjustment
+2nd Pomodoro : Rearrange canvases
+3rd Pomodoro : Define new template for the basic shapes
+4th Pomodoro : Define new template for the basic shapes
+5th Pomodoro : Define new  template for the flow chart shapes
+6th Pomodoro : Define new template for the flow chart shapes
+7th Pomodoro : New palettes added
+
+17 Oct
+
+1st Pomodoro : design index1 another theme
+2nd Pomodoro : reconfigure the template for basic shapes
+3rd Pomodoro : Resolve the the incompatible factor betweens templates
+4th Pomodoro : Resolve the the incompatible factor betweens templates
+5th Pomodoro : Add more shapes to the basic shapes according to the new templates
+6th Pomodoro : Add more shapes to the basic shapes according to the new templates
+7th Pomodoro : Define new toolbar 
+8th Pomodoro : Align buttons and functions
+9th Pomodoro : Text adjustment button and functions
+
+18 Oct
+
+1st Pomodoro : Continue on text manipulation functions
+2nd Pomodoro : Continue on text manipulation functions
+3rd Pomodoro : Continue on text manipulation functions
+4th Pomodoro : left span tab added
+5th Pomodoro : Redefine templates for textmanipulation
+6th Pomodoro : Redefine templates for textmanipulation
+7th Pomodoro : Icon for toolbar
+8th Pomodoro : Functions and Directives for toolbar (align, bold,italic)
+9th Pomodoro : Functions and Directives for toolbar (bigger/smaller text)
+
+19 Oct
+
+1st Pomodoro : Functions and directives for toolbar (zoom in/out, delete)
+2nd Pomodoro : Functions and directives for nav bar (Edit menu)
+3rd Pomodoro : Functions and directives for nav bar (zoom, layout, group/ungroup)
+4th Pomodoro : Define new templates for page flow Palette
+5th Pomodoro : Define new templates for page flow Palette
+6th Pomodoro : Define new templates for page flow Palette
+7th Pomodoro : Define new templates for page flow Palette
+8th Pomodoro : page flow Palette added
+9th Pomodoro : Palette layout adjustment
+
+21 Oct
+
+1st Pomodoro : Define new tool for free hand drawing function
+

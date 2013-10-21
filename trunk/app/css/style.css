@@ -1,0 +1,35 @@
+
+#SaveBoard
+{float: left;
+    width: 90%; height:100%;
+    /*margin:10px;padding:10px;border:1px solid #aaaaaa; -moz-border-raius: 10px;*/
+    /*-webkit-border-radius: 10px;*/
+}
+#myPalette,#bsPalette,#flowPalette,#pflowPalette
+{width: 100%; height:75%;}
+#navigator
+{
+    float: left; width:30%; height:300px;   display: inline-block;
+}
+#Palettediv
+{
+    float: left; width:70%; height:300px;  display: inline-block;
+}
+#myDiagram
+{ float: left ; width:100%; height:100%;}
+#leftspan
+{ float: left ; width:500px; height:700px; margin:10px;padding:10px;border:1px solid #aaaaaa;-moz-border-radius: 10px;
+    -webkit-border-radius: 10px;}
+#editor
+{  border: solid 1px gray; font-family:Monospace; font-size:11px; }
+#myImages
+{float:left; width:800px; height:500px; margin:10px;padding:10px;border:1px solid #aaaaaa;-moz-border-radius: 10px;
+    -webkit-border-radius: 10px;}
+#mySavedModel, #searchtext
+{-moz-border-radius: 10px;
+    -webkit-border-radius: 10px;}
+
+.done-true {
+    text-decoration: line-through;
+    color: grey;
+}
