@@ -1,22 +1,15 @@
+<!DOCTYPE html>
 <html ng-app="app">
 <head>
+    <title>Diagram Editor</title>
+
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <link rel="stylesheet" type="text/css" href="css/angular-ui.css">
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/semantic.css">
+    <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700|Open+Sans:300italic,400,300,700' rel='stylesheet' type='text/css'>
 </head>
-<!--<tabs>-->
-<!--<pane title="Localization">-->
-<!--Date: {{ '2012-04-01' | date:'fullDate' }} <br>-->
-<!--Currency: {{ 123456 | currency }} <br>-->
-<!--Number: {{ 98765.4321 | number }} <br>-->
-<!--</pane>-->
-<!--<pane title="Pluralization">-->
-
-<!--asdf-->
-
-<!--</pane>-->
-<!--</tabs>-->
-<!--navigation bar-->
+<body>
 <div id="navbar-app" class="navbar navbar-static" ng-controller="NavBarCtrl">
     <div class="navbar-inner">
         <div class="container" style="width: auto;">
@@ -171,30 +164,30 @@
     </div>
 
     <!--open diaglog-->
-    <div id="openDocument" class="draggable">
-        <div id="openDraggableHandle" class="handle">Open File</div>
-        <div id="openText" class="elementText">Choose file to open...</div>
-        <select id="mySavedFiles" class="mySavedFiles" ></select>
-        <br />
-        <button id="openBtn" class="elementBtn" type="button" ng-click="load()" style="margin-left:70px">Open</button>
-        <button id="cancelBtn"class="elementBtn" type="button" ng-click="closeElement()" >Cancel</button>
-    </div>
+    <!--<div id="openDocument" class="draggable">-->
+        <!--<div id="openDraggableHandle" class="handle">Open File</div>-->
+        <!--<div id="openText" class="elementText">Choose file to open...</div>-->
+        <!--<select id="mySavedFiles" class="mySavedFiles" ></select>-->
+        <!--<br />-->
+        <!--<button id="openBtn" class="elementBtn" type="button" ng-click="load()" style="margin-left:70px">Open</button>-->
+        <!--<button id="cancelBtn"class="elementBtn" type="button" ng-click="closeElement()" >Cancel</button>-->
+    <!--</div>-->
 
-    <div id="removeDocument" class="draggable">
-        <div id="removeDraggableHandle" class="handle">Delete File</div>
-        <div id="removeText" class="elementText">Choose file to remove...</div>
-        <select id="mySavedFiles2" class="mySavedFiles" ></select>
-        <br />
-        <button id="removeBtn" class="elementBtn" type="button" ng-click="removeFile()" style="margin-left:70px">Remove</button>
-        <button id="cancelBtn2"class="elementBtn" type="button" ng-click="closeElement()">Cancel</button>
-    </div>
-    <div id="importDocument" class="draggable">
-        <div id="ImportDraggableHandle" class="handle">Import</div>
-        <div id="ImportText" class="elementText">Choose file to import...</div>
-        <input type="file" id="fileToLoad">
-        <button ng-click="loadFileAsText()">Open</button>
-        <button id="cancelBtn3"class="elementBtn" type="button" ng-click="closeElement()">Cancel</button>
-    </div>
+    <!--<div id="removeDocument" class="draggable">-->
+        <!--<div id="removeDraggableHandle" class="handle">Delete File</div>-->
+        <!--<div id="removeText" class="elementText">Choose file to remove...</div>-->
+        <!--<select id="mySavedFiles2" class="mySavedFiles" ></select>-->
+        <!--<br />-->
+        <!--<button id="removeBtn" class="elementBtn" type="button" ng-click="removeFile()" style="margin-left:70px">Remove</button>-->
+        <!--<button id="cancelBtn2"class="elementBtn" type="button" ng-click="closeElement()">Cancel</button>-->
+    <!--</div>-->
+    <!--<div id="importDocument" class="draggable">-->
+        <!--<div id="ImportDraggableHandle" class="handle">Import</div>-->
+        <!--<div id="ImportText" class="elementText">Choose file to import...</div>-->
+        <!--<input type="file" id="fileToLoad">-->
+        <!--<button ng-click="loadFileAsText()">Open</button>-->
+        <!--<button id="cancelBtn3"class="elementBtn" type="button" ng-click="closeElement()">Cancel</button>-->
+    <!--</div>-->
 </div> <!-- /end-of-nav-bar-->
 
 <div ng-controller="buttonCtrl" class="navbar">
@@ -223,9 +216,9 @@
 
         <div class="btn-group" style="margin: 5px 13px;">
             <button type="button" class="btn " ng-model="radioModel" btn-radio="'Normal'"
-            ng-click="mode(false)">normal</button>
+                    ng-click="mode(false)">normal</button>
             <button type="button" class="btn " ng-model="radioModel" btn-radio="'Freehand'"
-            ng-click="LoadFreeHand()"><i class="icon-pencil"></i></button>
+                    ng-click="LoadFreeHand()"><i class="icon-pencil"></i></button>
             <button type="button" class="btn " ng-click="LoadPolygon()" ng-model="radioModel" btn-radio="'Polygon'"><img src="img\polygon.png"></button>
         </div>
 
@@ -242,177 +235,49 @@
     </div>
 </div>
 
-<!--button -->
-<!--<ZoomOut></ZoomOut>-->
-<!--<ZoomIn></ZoomIn>-->
-<!--<SelectAll></SelectAll>-->
-<!--<Cut></Cut>-->
-<!--<Copy></Copy>-->
-<!--<Paste></Paste>-->
-<!--<Delete></Delete>-->
-<!--<Group></Group>-->
-<!--<UnGroup></UnGroup>-->
-<!--<Undo></Undo>-->
-<!--<Redo></Redo>-->
-<!--<ZoomtoFit></ZoomtoFit>-->
+
+    <wij-splitter splitter-distance="250" style="height:450px; border:2px solid grey" >
+        <div>
+            <wij-splitter splitter-distance="300" orientation="horizontal" style="height:295px">
+                <div>
+                    <div id="accordion">
+
+                        <wij-accordion>
+                            <h3><b>EIP</b></h3>
+                            <div id="myPalette"></div>
+                            <h3>Basic Shape</h3>
+                            <div id="bsPalette"></div>
+                            <h3>Flow Palette</h3>
+                            <div id="flowPalette"></div>
+                            <h3>Page flow</h3>
+                            <div id="pflowPalette"></div>
+                            <h3>Furniture</h3>
+                            <div id="furPalette"></div>
+                        </wij-accordion>
+                    </div>
+
+
+                </div>
+                <div id="navigator"></div>
+            </wij-splitter>
+        </div>
+        <div>
+            <div id="currentFile">(Unsaved File)</div>
+            <div id="myDiagram"></div>
+
+
+        </div>
+    </wij-splitter>
+
+<div ng-controller="DiagramCtrl"></div>
 
 
 
-<!--end of button-->
-<!--<br>-->
-<!--default pattern holder-->
-<!--<dpholder></dpholder>-->
-<!--layout holder-->
-<!--<layoutholder></layoutholder>-->
-<!--<br>-->
-<!--<br>-->
-
-<div style="border:1px solid #aaaaaa;">
-    <div id="navigator"></div>
-    <div id="Palettediv">
-        <wij-tabs collapsible="true">
-            <ul>
-                <li><a href="#EIP"><b>EIP</b></a></li>
-                <li><a href="#basicShape"><b>basic shape</b></a></li>
-                <li><a href="#flow"><b>Flow Chart</b></a></li>
-                <li><a href="#pflow"><b>Page flow</b></a></li>
-                <li><a href="#furniture"><b>furniture</b></a></li>
-            </ul>
-            <div id="EIP">
-                <div id="myPalette" style="overflow:scroll"></div>
-            </div>
-            <div id="basicShape">
-                <div id="bsPalette"></div>
-            </div>
-            <div id="flow">
-                <div id="flowPalette"></div>
-            </div>
-            <div id="pflow">
-                <div id="pflowPalette"></div>
-            </div>
-            <div id="furniture">
-                <div id="furPalette"></div>
-            </div>
-        </wij-tabs>
-
-    </div>
-</div>
-
-<br>
-
-<wij-splitter splitter-distance="420" orientation="vertical" style="height:700px;border:2px solid grey" >
-    <div>
-        <wij-tabs alignment="left" collapsible="true">
-            <ul>
-                <li><a href="#atl"><b>UndoLog</b></a></li>
-                <!--<li><a href="#ord"><b>changedLog</b></a></li>-->
-                <li><a href="#lax"><b>Editor</b></a></li>
-                <li><a href="#savdiv"><b>JSON</b></a></li>
-
-            </ul>
-            <div id="atl">
-                <!--<div id="undoDisplayCanvas" style="height:30%; border: solid 1px gray"></div>-->
-
-
-            </div>
-            <!--<div id="ord">-->
-                <!--<div id="modelChangedLog" style="height:30%;border: solid 1px gray; font-family:Monospace; font-size:11px; overflow:scroll"></div>-->
-            <!--</div>-->
-
-
-            <div id="lax">
-                <!--<textarea autofocus placeholder="Editor \ s area...." id="editor"   style=" height:30%;width:100%;border: solid 1px gray ;overflow:scroll " wrap="SOFT" ></textarea>-->
-            </div>
-
-            <div id="savdiv">
-                <!--<saveboard></saveboard>-->
-
-            </div>
-
-
-        </wij-tabs>
-
-
-
-
-        <!--<div id="info" style="height:30%; border: solid 1px gray">-->
-            <!--type <input type="text" readonly="true" ng-model="type">{{type}}</input>-->
-        <!--</div>-->
-    </div>
-    <div >
-        <div id="currentFile">(Unsaved File)</div>
-        <div id="myDiagram"></div>
-    </div>
-
-</wij-splitter>
-
-
-<br>
-<!--diagram controller-->
-<div ng-controller="DiagramCtrl" style="width:100%"> <span id="paletteSpan">
-     <ul>
-         <li ng-repeat="node in nodes">{{node.text}}</li>
-     </ul>
-  <div >
-      <br>
-      <!--zippy-->
-      <zippy > <div type="button" class="btn btn-primary" ng-click="toggleContent()">Search Panel</div>
-          <div  ng-show="isContentVisible">
-              <!--search box-->
-              <search></search>
-
-              <span>{{searchText}}</span>
-
-              <ul class="unstyled">
-                  <li ng-repeat="item in list | filter: searchText"> <span class="">{{item.text | uppercase}} - {{item.des | lowercase}}</span>
-
-                  </li>
-              </ul>
-          </div>
-      </zippy>
-      <!--end of zippy-->
-  </div>
-
-
-
-
-
-
-    <span id="diagramSpan">
-    <!--Editor-->
-    <!--<div autofocus placeholder="Editor \ s area...." id="infobar"   style="border: solid 1px gray;overflow:scroll " wrap="SOFT" >-->
-    <!--<tabhistory></tabhistory>-->
-    <!--<ng-view></ng-view>-->
-    <div id="leftspan" style="overflow:scroll" >
-
-    </div>
-
-    <!--Diagram-->
-    <div  style="border: solid 1px gray; "></div>
-
-
-   </span>
-
-
-<br/>
-
-<!--save board-->
-
-
-
-
+</body>
 </html>
-<!-- <div style="border: 1px solid gray; padding: 10px; margin-bottom: 20px; -moz-border-radius: 10px; -webkit-border-radius: 10px;">
-Width: <input id="widthInput" value="700" />
-Height: <input id="heightInput" value="960" />
-<!-- Color: <input  id="ColorInput" type="color"/> -->
-<!-- button id="makeImages">Generate img for printing</button>
-</div>
-<div id="myImages">
-</div> -->
 
 <!-- jQuery -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js" type="text/javascript"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js" type="text/javascript"></script>
 <!-- Wijmo CSS and script -->
 
@@ -441,6 +306,10 @@ Height: <input id="heightInput" value="960" />
 <script type="text/javascript" src="js/Vendors/PolygonDrawingTool.js"></script>
 <script type="text/javascript" src="js/Vendors/SerpentineLayout.js"></script>
 <script type="text/javascript" src="js/Vendors/GuidedDraggingTool.js"></script>
+
+<!--Semantic ui-->
+<script type="text/javascript" src="js/Vendors/semantic.js"></script>
+
 
 
 
@@ -475,18 +344,23 @@ Height: <input id="heightInput" value="960" />
     </div>
 </script>
 <script>
-$(function() {
-$( "#openDocument" ).draggable();
-});
+    $(function() {
+        $( "#openDocument" ).draggable();
+    });
 
-$(function() {
-    $( "#removeDocument" ).draggable();
-});
+    $(function() {
+        $( "#removeDocument" ).draggable();
+    });
 
-$(function() {
-    $( "#importDocument" ).draggable();
-});
+    $(function() {
+        $( "#importDocument" ).draggable();
+    });
+
+    $('.ui.accordion')
+            .accordion()
+    ;
 
 
 
 </script>
+

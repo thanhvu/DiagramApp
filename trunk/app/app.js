@@ -1,4 +1,4 @@
-var app = angular.module('app', ['ui.bootstrap','mongolabResource','wijmo']);
+var app = angular.module('app', ['ui.bootstrap','mongolabResource']);
 
 //declare DBName && API key for mongolab API
 app.constant('API_KEY', 'IwSa5arjX44ZDRAQXdI8sV2weKfGfe4E');

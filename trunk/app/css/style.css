@@ -1,22 +1,121 @@
 
+html,
+body {
+    height: 100%;
+    margin:0;
+    padding:0;
+}
+#wrap {
+    background-color: purple;
+    min-height: 100%;
+}
+#Menu {
+    background-color: yellow;
+    height: 33px;
+}
+#toolbar {
+    background-color: orange;
+    height: 40px;
+}
+#mybody {
+    background-color: white;
+
+    position: absolute;
+    bottom: 0px;
+    top: 73px;
+    left: 0px;
+    right: 0px;
+}
+#splitter {
+    background-color: green;
+    height: 100%;
+    position: relative;
+}
+#sidebar {
+    background-color: blue;
+    width: 100%;
+
+}
+#content {
+    background-color: white;
+    width: 100%;
+    overflow-y: auto;
+}
+#footer {
+    background-color: gray;
+    position: absolute;
+    bottom: 0;
+    height: 50px;
+    width: 100%;
+}
+
+#currentFile {
+    background: #1874CD;
+    width:100%;
+    text-align:center;
+    font-family:Arial;
+    font-weight:bold;
+    font-size:14px;
+    padding:3px 0px;
+    color: white;
+}
+.draggable {
+    display: inline-block;
+    vertical-align: top;
+    border: 1px solid gray;
+    background-color: #e2e2e2;
+
+    position: absolute;
+    top:40%;
+    left:50%;
+    width:300px;
+    height: 200px;
+    z-index: 500;
+}
+.handle {
+    background-color: #9CCB19;
+    text-align: center;
+    font: bold 12px sans-serif;
+}
+.elementText {
+    font-family:Arial;
+    font-size:medium;
+    margin-left: 10px;
+    margin-top: 20px;
+    margin-bottom:10px;
+}
+
 #SaveBoard
 {float: left;
     width: 90%; height:100%;
     /*margin:10px;padding:10px;border:1px solid #aaaaaa; -moz-border-raius: 10px;*/
     /*-webkit-border-radius: 10px;*/
 }
-#myPalette,#bsPalette,#flowPalette,#pflowPalette
-{width: 100%; height:75%;}
+#myPalette,#bsPalette,#flowPalette,#pflowPalette,#furPalette
+{
+    float: left; width:150%; height:300%;   display: inline-block; overflow: hidden;
+}
 #navigator
 {
-    float: left; width:30%; height:300px;   display: inline-block;
+float:left; width:200px; height:100px; margin:10px;padding:10px;border:1px solid #aaaaaa; -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    position : absolute;
+    left : 80%;
+    top : 5%;
+    z-index: 1;
 }
 #Palettediv
 {
     float: left; width:70%; height:300px;  display: inline-block;
 }
 #myDiagram
-{ float: left ; width:100%; height:100%;}
+{
+    float: left ;
+    width:100%;
+    height:100%;
+    z-index: 0;
+
+}
 #leftspan
 { float: left ; width:500px; height:700px; margin:10px;padding:10px;border:1px solid #aaaaaa;-moz-border-radius: 10px;
     -webkit-border-radius: 10px;}
@@ -32,4 +131,85 @@
 .done-true {
     text-decoration: line-through;
     color: grey;
+}
+#splitterContainer {/* Main splitter element */
+    height:100%;
+    width:100%;
+    margin:0;
+    padding:0;
+}
+#leftPane{
+    float:left;width:15%;height:100%;border-top:solid 1px #9cbdff;
+    background:#c4dcfb;
+    overflow: auto;
+}
+#rightPane{	/*Contains toolbar and horizontal splitter*/
+    float:right;width:80%;height:100%;
+/*background:#f4f4f4;*/
+    }
+#rightSplitterContainer{/*horizontal splitter*/
+    width:100%;
+    background:#FFFFFF;border-top:solid 1px #9cbdff;
+}
+
+#rightTopPane{/*Top nested in horizontal splitter */
+    width:100%;height:80%;overflow:auto;background:#f4f4f4;
+}
+#rightBottomPane{/*Bottom nested in horizontal splitter */
+    background:#f4f4f4;width:100%;overflow:auto;
+}
+
+
+/* Splitbar styles; these are the default class names and required styles */
+.splitbarV {
+    float:left;width:6px;height:100%;
+    line-height:0px;font-size:0px;
+    border-left:solid 1px #9cbdff;border-right:solid 1px #9cbdff;
+    background:#cbe1fb; url(img/panev.gif) 0% 50%;
+}
+.splitbarH {
+    height:6px;text-align:left;line-height:0px;font-size:0px;
+    border-top:solid 1px #9cbdff;border-bottom:solid 1px #9cbdff;
+    background:#cbe1fb; url(img/paneh.gif) 50% 0%;
+}
+
+.splitbuttonV{
+    margin-top:-41px;margin-left:-4px;top:50%;position:relative;
+    height:83px;width:10px;
+    background:transparent; url(img/panevc.gif) 10px 50%;
+}
+.splitbuttonV.invert{
+    margin-left:0px;background:transparent; url(img/panevc.gif) 0px 50%;
+}
+.splitbuttonH{
+    margin-left:-41px;left:50%;position:relative;
+    height:10px !important;width:83px;
+    background:transparent; url(img/panehc.gif) 50% 0px;
+}
+.splitbuttonH.invert{
+    margin-top:-4px;background:transparent; url(img/panehc.gif) 50% -10px;
+}
+.splitbarV.working,.splitbarH.working,.splitbuttonV.working,.splitbuttonH.working{
+    -moz-opacity:.50; filter:alpha(opacity=50); opacity:.50;
+}
+.geEditor ::-webkit-scrollbar {
+    width:12px;
+    height:12px;
+}
+.geEditor ::-webkit-scrollbar-track {
+    background:whiteSmoke;
+    -webkit-box-shadow:inset 0 0 4px rgba(0,0,0,0.1);
+}
+.geEditor ::-webkit-scrollbar-thumb {
+    background:#c5c5c5;
+    border-radius:10px;
+    border:whiteSmoke solid 3px;
+}
+.geEditor ::-webkit-scrollbar-thumb:hover {
+    background:#b5b5b5;
+}
+.lauch .button{
+    position: fixed;
+    top : 60px;
+    z-index: 500;
 }

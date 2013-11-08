@@ -2,6 +2,9 @@ app.controller("buttonCtrl",function ($scope,DiagramService){
 
     $scope.Diagram = DiagramService.myDiagram;
     $scope.threshold = DiagramService.threshold;
+    $scope.radioModel = 'Normal';
+    $scope.arrowkeyModel = 'Move';
+
 
     $scope.ZoomIn = function(){
         $scope.Diagram.commandHandler.increaseZoom();
@@ -39,6 +42,48 @@ app.controller("buttonCtrl",function ($scope,DiagramService){
     $scope.textManipulation = function(feature){
         DiagramService.textManipulation(feature)
     }
+    $scope.LoadFreeHand = function(){
+        DiagramService.LoadFreeHand();
+    }
+    $scope.mode = function(draw){
+        DiagramService.FreeHandMode(draw);
+    }
+    $scope.LoadPolygon = function(){
+        DiagramService.LoadPolygonMode();
+    }
+    $scope.loadFileAsText = function(){
+        var fileToLoad = document.getElementById("fileToLoad").files[0];
+
+        var fileReader = new FileReader();
+        fileReader.onload = function(fileLoadedEvent)
+        {
+            var textFromFileLoaded = fileLoadedEvent.target.result;
+            document.getElementById("mySavedModel").value = textFromFileLoaded;
+        };
+        fileReader.readAsText(fileToLoad, "UTF-8");
+        load()
+    }
+    function load() {
+        str = document.getElementById("mySavedModel").value;
+        myDiagram.model = go.Model.fromJson(str);
+        myDiagram.undoManager.isEnabled = true;
+    }
+    // arrowkey function is determined by a dropbox in the toolbar
+    $scope.arrowMode=function (value) {
+
+        if (value === 'Move') {
+            myDiagram.commandHandler.arrowKeyBehavior = "move";
+        } else if (value === 'Select') {
+            myDiagram.commandHandler.arrowKeyBehavior = "select";
+
+        } else if (value ==='Scroll') {
+            myDiagram.commandHandler.arrowKeyBehavior = "scroll";
+        }
+    }
+
+
+
+
 
 })
 

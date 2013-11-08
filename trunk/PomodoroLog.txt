@@ -1,46 +1,213 @@
-Log
-15 Oct
-1st Pomodoro : add wijmo + find out how to use splitter
-2nd Pomodoro : splitter added
-3rd Pomodoro : splitter adjustment
-4th Pomodoro : splitter adjustment
-5th Pomodoro : add accordion
-6th Pomodoro : choose between wiji's directives or bootstrap
-7th Pomodoro : Move all canvases to the splitter
+7 Nov (Thu)
+1st Pomodoro :
+6 Nov (Wed)
 
-16 Oct
+5 Nov (Tue)
+1st Pomodoro : Read doc semantic ui modal
+2nd Pomodoro : setup modal for open
+3rd Pomodoro : setup modal for open
+4th Pomodoro : setup modal for open
+5th Pomodoro : setup modal for remove
+6th Pomodoro : setup modal for remove
+7th Pomodoro : setup modal for remove
+8th Pomodoro : Leaving without saving confirm
+9th Pomodoro : Leaving without saving confirm
 
-1st Pomodoro : Continue moving parts to the splitter + splitter adjustment
-2nd Pomodoro : Rearrange canvases
-3rd Pomodoro : Define new template for the basic shapes
-4th Pomodoro : Define new template for the basic shapes
-5th Pomodoro : Define new  template for the flow chart shapes
-6th Pomodoro : Define new template for the flow chart shapes
-7th Pomodoro : New palettes added
+4 Nov (Mon)
+working on file : index1.html
 
-17 Oct
+1st Pomodoro : css for navigator (float on canvas)
+2nd Pomodoro : css for navigator (float on canvas)
+3rd Pomodoro : adjust splitter (remove 1 spliter )
+4th Pomodoro : adjust splitter (remove 1 spliter )
+5th Pomodoro : adjust splitter (remove 1 spliter )
+6th Pomodoro : adjust accordion (expand)
+7th Pomodoro : adjust accordion (expand)
+8th Pomodoro : adjust accordion (expand)
+9th Pomodoro : Read doc semantic ui sidebar
+10th Pomodoro: setup sidebar
+11th Pomodoro: setup sidebar
+12th Pomodoro: setup sidebar
 
-1st Pomodoro : design index1 another theme
-2nd Pomodoro : reconfigure the template for basic shapes
-3rd Pomodoro : Resolve the the incompatible factor betweens templates
-4th Pomodoro : Resolve the the incompatible factor betweens templates
-5th Pomodoro : Add more shapes to the basic shapes according to the new templates
-6th Pomodoro : Add more shapes to the basic shapes according to the new templates
-7th Pomodoro : Define new toolbar 
-8th Pomodoro : Align buttons and functions
-9th Pomodoro : Text adjustment button and functions
+3 Nov (Sun)
 
-18 Oct
+working on file : index1.html
+1st Pomodoro : Redesign css for new theme
+2nd Pomodoro : Redesign css for Menu
+3rd Pomodoro : Redesign css for Menu
+4th Pomodoro : Redesign css for Toolbar
+5th Pomodoro : Redesign css for Toolbar 
+6th Pomodoro : Redesign css for splitter 
+7th Pomodoro : Redesign css for splitter
+8th Pomodoro : Redesign css for splitter
+9th Pomodoro : Redesign css for splitter
+10th Pomodoro: Put on Splitter and accordion
+11th Pomodoro: Put on Splitter and accordion
+12th Pomodoro: Put on Splitter and accordion
 
-1st Pomodoro : Continue on text manipulation functions
-2nd Pomodoro : Continue on text manipulation functions
-3rd Pomodoro : Continue on text manipulation functions
-4th Pomodoro : left span tab added
-5th Pomodoro : Redefine templates for textmanipulation
-6th Pomodoro : Redefine templates for textmanipulation
-7th Pomodoro : Icon for toolbar
-8th Pomodoro : Functions and Directives for toolbar (align, bold,italic)
-9th Pomodoro : Functions and Directives for toolbar (bigger/smaller text)
+2 Nov (Sat)
+
+working on file : themerefine.html
+
+1st Pomodoro : Re-Setup on new file with splitter (Krikus) & accordion (semantic UI)
+2nd Pomodoro : Re-Setup on new file with splitter (Krikus) & accordion (semantic UI)
+3rd Pomodoro : Re-Setup on new file with splitter (Krikus) & accordion (semantic UI)
+4th Pomodoro : Re-Setup on new file with splitter (Krikus) & accordion (semantic UI)
+5th Pomodoro : Adjust Palette shown in accordion
+6th Pomodoro : Adjust Palette shown in accordion
+7th Pomodoro : Adjust Palette shown in accordion
+8th Pomodoro : Adjust Palette shown in accordion
+9th Pomodoro : Adjust Palette shown in accordion
+10th Pomodoro: Adjust Palette shown in accordion
+11th Pomodoro: Adjust Palette shown in accordion
+12th Pomodoro: Adjust Palette shown in accordion
+13th Pomodoro: Adjust Palette shown in accordion
+
+1 Nov (fri)
+
+working on file : newtheme.html
+
+1st Pomodoro : Setup Splitter(methvin) and accordion (semantic UI)
+2nd Pomodoro : Setup Splitter(methvin) and accordion (semantic UI)
+3rd Pomodoro : Adjust Palette shown in accordion
+4th Pomodoro : Adjust Palette shown in accordion
+5th Pomodoro : Adjust Palette shown in accordion
+6th Pomodoro : Adjust Palette shown in accordion
+7th Pomodoro : Set up new splitter(Wijimo) and accordion (semantic UI) though methvin & Semantic
+				UI are not compatible
+8th Pomodoro : Set up new splitter(Wijimo) and accordion (semantic UI)
+9th Pomodoro : Set up new splitter(Wijimo) and accordion (semantic UI)
+10th Pomodoro: Set up new splitter(Wijimo) and accordion (semantic UI)
+11th Pomodoro: Set up new splitter(Wijimo) and accordion (semantic UI)
+12th Pomodoro: Set up new splitter(Wijimo) and accordion (semantic UI)
+
+
+31 Oct (thus) 
+
+working on file : newtheme.html
+
+1st Pomodoro : Redefine the splitter (reading doc)
+2nd Pomodoro : Redefine the splitter (reading doc)
+3rd Pomodoro : Redefine the splitter
+4th Pomodoro : Redefine the splitter
+5th Pomodoro : Setup semantic ui
+6th Pomodoro : Setup accordion (Reading doc)
+7th Pomodoro : Find another slitter ( wijimo & semantic-ui are not compatible)
+8th Pomodoro : Setup both splitter and accordion from wijimo
+9th Pomodoro : Setup both splitter and accordion from wijimo
+10th Pomodoro: Define new theme using new library for splitter (from methvin)
+11th Pomodoro: Define new theme using new library for splitter (from methvin)
+12th Pomodoro: Define new theme using new library for splitter (from methvin)
+
+30 Oct
+
+1st Pomodoro : Fix error Open dialog does not display all the saved files
+2nd Pomodoro : Fix error Open dialog does not display all the saved files
+				+ make the div draggable
+3rd Pomodoro : Define html elemnent for import functions				
+4th Pomodoro : Define html elemnent for import functions				
+5th Pomodoro : Show/hide import html element
+6th Pomodoro : Define html element for delete saved files functions
+7th Pomodoro : Delete saved files functions
+8th Pomodoro : Delete saved files functions
+
+29 Oct
+
+1st Pomodoro : Continue Load from file and import to diagram
+2nd Pomodoro : Define new template for furniture palette
+3rd Pomodoro : Define new template for furniture palette
+4th Pomodoro : Define new template for furniture palette
+5th Pomodoro : new palette added
+6th Pomodoro : Define new place for saved files management
+7th Pomodoro : 3 modes for arrows key
+
+28 Oct
+
+1st Pomodoro : Fix error with guided dragging tool
+2nd Pomodoro : Fix error asking to save diagram 
+3rd Pomodoro : Fix error asking to save diagram 
+4th Pomodoro : Save json to file functions (Export function)
+5th Pomodoro : Save json to file functions (Export function)
+6th Pomodoro : Load Json from file (Import function)
+
+27 Oct
+
+1st Pomodoro : Fix error when display html element for open
+2nd Pomodoro : Fix error when display html element for open
+3rd Pomodoro : Fix error when display html element for open
+4th Pomodoro : Check Diagram modified before open or save as
+5th Pomodoro : Check Diagram modified before open or save as
+6th Pomodoro : Check Diagram modified before open or save as
+7th Pomodoro : handle error when dragging with different templates
+8th Pomodoro : handle error when dragging with different templates
+
+
+26 Oct
+
+1st Pomodoro : Handle html elemnent for open ( display)
+2nd Pomodoro : Handle html elemnent for open ( display)
+3rd Pomodoro : Handle html elemnent for open ( close)
+4th Pomodoro : Handle html elemnent for open ( close)
+
+
+25 Oct
+
+1st Pomodoro : continue creating html element for open document
+2nd Pomodoro : continue creating html element for open document
+3rd Pomodoro : Open function in nav bar ( load from local storage)
+4th Pomodoro : Open function in nav bar ( load from local storage)
+
+24 Oct
+
+1st Pomodoro : create html element for save as
+2nd Pomodoro : Display html box
+3rd Pomodoro : Save as function in nav bar 
+4th Pomodoro : Save as function in nav bar
+5th Pomodoro : Check if unsavefile before save as
+6th Pomodoro : Check if unsavefile before save as
+7th Pomodoro : auto rename current working file
+8th Pomodoro : create html element for open document
+
+
+23 Oct
+
+1st Pomodoro : Try using modal of angular bootstrap
+2nd Pomodoro : Try using modal of angular bootstrap
+3rd Pomodoro : Open function using modal
+4th Pomodoro : Open function using modal
+5th Pomodoro : save Json to local storage function
+6th Pomodoro : save Json to local storage function
+
+22 Oct
+
+1st Pomodoro : Define new template for furniture shape
+2nd Pomodoro : Set up Align function on menu
+3rd Pomodoro : Define new align tool for extend of commandhandler
+4th Pomodoro : Fixing error with the new align tool
+4th Pomodoro : Fixing error with the new align tool
+4th Pomodoro : error with the new align tool handled
+5th Pomodoro : Set up Rotate functions on menu
+6th Pomodoro : Define new align tool for extend of commandhandler
+7th Pomodoro : Define new guided dragging tool
+
+21 Oct
+
+1st Pomodoro : Define new tool for free hand drawing function
+2nd Pomodoro : Define new template for free hand drawing function
+3rd Pomodoro : Define new template for free hand drawing function
+4th Pomodoro : Set up radio button for drawing modes
+5th Pomodoro : Set up Tool->FreeHand drawing tool menu
+6th Pomodoro : Switch back to normal mode function
+7th Pomodoro : Switch back to default node template function
+
+20 Oct
+
+1st Pomodoro : Fix the data error with basic shapes template
+2nd Pomodoro : Fix the data error with basic shapes template
+3rd Pomodoro : Define new tool for Polygon drawing 
+4th Pomodoro : Define new template for polygon drawing
+5th Pomodoro : Define new template for polline drawing
+6th Pomodoro : Switch function between polygon and polyline
 
 19 Oct
 
@@ -54,7 +221,56 @@ Log
 8th Pomodoro : page flow Palette added
 9th Pomodoro : Palette layout adjustment
 
-21 Oct
 
-1st Pomodoro : Define new tool for free hand drawing function
+18 Oct
+
+1st Pomodoro : Continue on text manipulation functions
+2nd Pomodoro : Continue on text manipulation functions
+3rd Pomodoro : Continue on text manipulation functions
+4th Pomodoro : left span tab added
+5th Pomodoro : Redefine templates for textmanipulation
+6th Pomodoro : Redefine templates for textmanipulation
+7th Pomodoro : Icon for toolbar
+8th Pomodoro : Functions and Directives for toolbar (align, bold,italic)
+9th Pomodoro : Functions and Directives for toolbar (bigger/smaller text)
+
+
+17 Oct
+
+1st Pomodoro : design index1 another theme
+2nd Pomodoro : reconfigure the template for basic shapes
+3rd Pomodoro : Resolve the the incompatible factor betweens templates
+4th Pomodoro : Resolve the the incompatible factor betweens templates
+5th Pomodoro : Add more shapes to the basic shapes according to the new templates
+6th Pomodoro : Add more shapes to the basic shapes according to the new templates
+7th Pomodoro : Define new toolbar 
+8th Pomodoro : Align buttons and functions
+9th Pomodoro : Text adjustment button and functions
+
+16 Oct
+
+1st Pomodoro : Continue moving parts to the splitter + splitter adjustment
+2nd Pomodoro : Rearrange canvases
+3rd Pomodoro : Define new template for the basic shapes
+4th Pomodoro : Define new template for the basic shapes
+5th Pomodoro : Define new  template for the flow chart shapes
+6th Pomodoro : Define new template for the flow chart shapes
+7th Pomodoro : New palettes added
+
+15 Oct
+
+1st Pomodoro : add wijmo + find out how to use splitter
+2nd Pomodoro : splitter added
+3rd Pomodoro : splitter adjustment
+4th Pomodoro : splitter adjustment
+5th Pomodoro : add accordion
+6th Pomodoro : choose between wiji's directives or bootstrap
+7th Pomodoro : Move all canvases to the splitter
+
+
+
+
+
+
+
 

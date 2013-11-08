@@ -2,7 +2,12 @@
 
 app.service("DiagramService",function(RuntimeService){
 
-    var myDiagram , $$,Palette,DefaultPattern,myPartContextMenu,navigator,undoDisplay,model,myNodes,BSPalette,FlowPalette,PflowPalette;
+    var myDiagram , $$,Palette,DefaultPattern,myPartContextMenu,navigator,undoDisplay,model,myNodes,
+        BSPalette,FlowPalette,PflowPalette,FurPalette;
+    var UnsavedFileName = "(Unsaved File)";
+    // brushes for furniture structures
+
+
     var bigfont = "bold 13pt Helvetica, Arial, sans-serif";
     var smallfont = "bold 11pt Helvetica, Arial, sans-serif";
     THRESHOLD =12500;
@@ -830,30 +835,133 @@ app.service("DiagramService",function(RuntimeService){
         myDiagram.model.addArrayItem(arr, {});
         myDiagram.commitTransaction("add reason");
     }
+    function LoadNodeTempForFreeHand(){
+        myDiagram.nodeTemplate =
+            $$(go.Part,
+                { locationSpot: go.Spot.Center },
+                new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
+                { selectionAdorned: true, selectionObjectName: "SHAPE",
+                    selectionAdornmentTemplate:  // custom selection adornment: a cyan rectangle
+                        $$(go.Adornment, "Auto",
+                            $$(go.Shape, { stroke: "cyan", fill: null }),
+                            $$(go.Placeholder))
+                },
+                { resizable: true, resizeObjectName: "SHAPE" },
+                { rotatable: true, rotateObjectName: "SHAPE" },
+                $$(go.Shape,
+                    { name: "SHAPE", fill: null, strokeWidth: 1.5 },
+                    new go.Binding("desiredSize", "size", go.Size.parse).makeTwoWay(go.Size.stringify),
+                    new go.Binding("angle").makeTwoWay(),
+                    new go.Binding("geometry", "geo", go.Geometry.parse).makeTwoWay(go.Geometry.stringify),
+                    new go.Binding("fill"),
+                    new go.Binding("stroke"),
+                    new go.Binding("strokeWidth")));
+    }
+    function BasicNodeTemplate(){
+        myDiagram.nodeTemplate =// the default category
+            $$(go.Node, go.Panel.Spot,
+                // The Node.location comes from the "loc" property of the node data,
+                // If the Node.location is changed, it updates the "loc" property of the node data,
+                new go.Binding("location", "loc").makeTwoWay(),
+                { locationSpot: go.Spot.Center, isShadowed: true },
+                //{ resizable: true },{ rotatable: true},
+                { mouseEnter: function(e, obj) { showPorts(obj.part, true); },
+                    mouseLeave: function(e, obj) { showPorts(obj.part, false); } },
+                // the main object is a Panel that surrounds a picture over a TextBlock with a rectangular Shape
+                $$(go.Panel, go.Panel.Auto,
+                    $$(go.Shape,
+                        {name: "shape", fill:greengrad },new go.Binding("figure","figure").makeTwoWay()
+                        ,new go.Binding("fill","fill")
+                    ),
+                    $$(go.TextBlock,
+                        {  margin: 5, text: "text",name:"text",
+                            font: "bold 9pt Helvetica, Arial, sans-serif", editable: true ,isMultiline: false,
+                            stroke: "rgb(190, 247, 112)" },new go.Binding("text","text")
+                    )),
+
+                // four named ports, one on each side:
+                makePort("T", go.Spot.Top, true, true),
+                makePort("L", go.Spot.Left, true, true),
+                makePort("R", go.Spot.Right, true, true),
+                makePort("B", go.Spot.Bottom, true, true),
+
+                { toolTip:
+                    $$(go.Adornment, go.Panel.Auto,
+                        $$(go.Shape, { fill: "#FFFFCC" }),
+                        $$(go.TextBlock, { margin: 4 },  // the tooltip shows the result of calling nodeInfo(data)
+                            new go.Binding("text", "", nodeInfo))),
+                    contextMenu: partContextMenu }
+            );
+
+
+    }
+    function LoadNodeTemplateForPolygon(){
+        myDiagram.nodeTemplate =
+            $$(go.Node,
+                { locationSpot: go.Spot.Center },
+                new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
+                { selectionAdorned: true, selectionObjectName: "SHAPE",
+                    selectionAdornmentTemplate:  // custom selection adornment: a cyan rectangle
+                        $$(go.Adornment, "Auto",
+                            $$(go.Shape, { stroke: "cyan", fill: null }),
+                            $$(go.Placeholder))
+                },
+                { resizable: true, resizeObjectName: "SHAPE" },
+                { rotatable: true, rotateObjectName: "SHAPE" },
+                $$(go.Shape,
+                    { name: "SHAPE", fill: "lightgray", strokeWidth: 1.5 },
+                    new go.Binding("desiredSize", "size", go.Size.parse).makeTwoWay(go.Size.stringify),
+                    new go.Binding("angle").makeTwoWay(),
+                    new go.Binding("geometry", "geo", go.Geometry.parse).makeTwoWay(go.Geometry.stringify),
+                    new go.Binding("fill"),
+                    new go.Binding("stroke"),
+                    new go.Binding("strokeWidth")));
+
+    }
+    // enable or disable all command buttons
+    function enableAll() {
+        var cmdhnd = myDiagram.commandHandler;
+        enable("AlignLeft", cmdhnd.canAlignSelection());
+        enable("AlignRight", cmdhnd.canAlignSelection());
+        enable("AlignTop", cmdhnd.canAlignSelection());
+        enable("AlignBottom", cmdhnd.canAlignSelection());
+        enable("AlignCenterX", cmdhnd.canAlignSelection());
+        enable("AlignCenterY", cmdhnd.canAlignSelection());
+        enable("AlignRow", cmdhnd.canAlignSelection());
+        enable("AlignColumn", cmdhnd.canAlignSelection());
+        enable("AlignGrid", cmdhnd.canAlignSelection());
+    }
+    // converts data about the part into a string
+    function tooltipTextConverter(data) {
+        if (data.item != undefined) return data.item;
+        return "(unnamed item)";
+    }
+
+
 
 
 
     return {
-       getDiagram : function(){
+        getDiagram : function(){
            return myDiagram
 
        },
-       getNodeArray : function(){
+        getNodeArray : function(){
            return myNodes;
        },
-       getPalette : function(){
+        getPalette : function(){
            return Palette;
        },
-       getGoMake : function(){
+        getGoMake : function(){
            return $$;
        },
-       getUndoDisplay : function(){
+        getUndoDisplay : function(){
         return undoDisplay;
        },
-       InitDiagram: function(){
+        InitDiagram: function(){
            myDiagram = new go.Diagram("myDiagram") // create a Diagram for the DIV HTML element},
        } ,
-       Init : function(nodes){
+        Init : function(nodes){
            myDiagram = new go.Diagram("myDiagram")  // create a Diagram for the DIV HTML element
            $$ = go.GraphObject.make // for conciseness in defining templates
            // initialize the Palette
@@ -861,6 +969,7 @@ app.service("DiagramService",function(RuntimeService){
            BSPalette = $$(go.Palette, "bsPalette") // must name or refer to the DIV HTML element
            FlowPalette = $$(go.Palette, "flowPalette") // must name or refer to the DIV HTML element
            PflowPalette = $$(go.Palette, "pflowPalette") // must name or refer to the DIV HTML element
+           FurPalette = $$(go.Palette, "furPalette") // must name or refer to the DIV HTML element
 
 
 
@@ -872,7 +981,7 @@ app.service("DiagramService",function(RuntimeService){
            navigator= new go.Overview("navigator")
            navigator.observed = myDiagram
        },
-       textManipulation: function (feature){
+        textManipulation: function (feature){
         var sel = myDiagram.selection;
         if(sel.count === 0){
             return;
@@ -898,11 +1007,68 @@ app.service("DiagramService",function(RuntimeService){
                 break;
         }
     },
+        FreeHandMode : function(draw){
+            // assume FreehandDrawingTool is the first tool in the mouse-down-tools list
+            var tool = myDiagram.toolManager.mouseDownTools.elt(0);
+            tool.isEnabled = draw;
+            //Reset the basic node template
+            //BasicNodeTemplate();
+
+        },
+        PolylineMode : function (draw, polygon) {
+            // assume PolygonDrawingTool is the first tool in the mouse-down-tools list
+            var tool = myDiagram.toolManager.mouseDownTools.elt(0);
+            tool.isEnabled = draw;
+            tool.isPolygon = polygon;
+            tool.archetypePartData.fill = (polygon ? "yellow" : null);
+        },
+        newDocument : function()  {
+        var currentFile = document.getElementById("currentFile");
+        // checks to see if all changes have been saved
+        if (myDiagram.isModified) {
+            var fileName = currentFile.textContent;
+            var save = confirm("Would you like to save changes to " + fileName + "?");
+            if (save) {
+                if (fileName == UnsavedFileName) {
+                    saveDocumentAs();
+                } else {
+                    saveDocument();
+                }
+            }
+        }
+        // loads a blank diagram
+        myDiagram.model = new go.GraphLinksModel();
+        myDiagram.model.undoManager.isEnabled = true;
+        myDiagram.isModified = false;
+        currentFile.innerHTML = UnsavedFileName;
+    },
+
+        LocalStorage : function(){
+            if (typeof (Storage) == "undefined" || navigator.appName == "Microsoft Internet Explorer") {
+                var currentFile = document.getElementById("currentFile");
+                currentFile.innerHTML = "Sorry! No web storage support. \n If you're using Internet Explorer, you must load the page from a server for local storage to work.";
+            } else {
+                // displays cached floor plan files in the listboxes
+                var openlistbox = document.getElementById("mySavedFiles2");
+                var removelistbox = document.getElementById("mySavedFiles2");
+                for (key in localStorage) {
+                    var storedFile = localStorage.getItem(key);
+                    if (storedFile === null || storedFile === undefined) continue;
+                    var option = document.createElement('option');
+                    option.value = key;
+                    option.text = key;
+                    openlistbox.add(option, null)
+                    removelistbox.add(option, null)
+                }
+            }
 
 
-    //load Node Template
-    LoadNodeTemplate : function ($$)
-    {
+        },
+
+
+        //load Node Template
+        LoadNodeTemplate : function ($$)
+        {
         // provide a tooltip for the background of the Diagram, when not over any Part
         myDiagram.toolTip =
             $$(go.Adornment, go.Panel.Auto,
@@ -925,7 +1091,17 @@ app.service("DiagramService",function(RuntimeService){
         var mainColor = "#00A9C9";
         var endColor = "#DC3C00";
 
-        // define the Node template for regular nodes
+            // sets the qualities of the tooltip
+            var tooltiptemplate =
+                $$(go.Adornment, go.Panel.Auto,
+                    $$(go.Shape, "RoundedRectangle",
+                        { fill: "whitesmoke", stroke: "gray" }),
+                    $$(go.TextBlock,
+                        { margin: 3, editable: true },
+                        new go.Binding("text", "", tooltipTextConverter)));
+
+
+            // define the Node template for regular nodes
         myDiagram.nodeTemplateMap.add("",// the default category
             $$(go.Node, go.Panel.Spot,
                 // The Node.location comes from the "loc" property of the node data,
@@ -1189,13 +1365,49 @@ app.service("DiagramService",function(RuntimeService){
                     )
                 )
             ));
+            myDiagram.nodeTemplateMap.add("furniture",
+                $$(go.Node, "Spot",
+                    {
+                        locationObjectName: "SHAPE",
+                        locationSpot: go.Spot.Center,
+                        toolTip: tooltiptemplate,
+                        selectionAdorned: false  // use a Binding on the Shape.stroke to show selection
+                    },
+                    // remember the location of this Node
+                    new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
+                    // move a selected part into the Foreground layer, so it isn't obscured by any non-selected parts
+                    new go.Binding("layerName", "isSelected", function(s) { return s ? "Foreground" : ""; }).ofObject(),
+                    // can be resided according to the user's desires
+                    { resizable: true, resizeObjectName: "SHAPE" },
+                    { rotatable: true, rotateObjectName: "SHAPE" },
+                    $$(go.Shape,
+                        {
+                            name: "SHAPE",
+                            // the following are default values;
+                            // actual values may come from the node data object via data-binding
+                            geometryString: "F1 M0 0 L20 0 20 20 0 20 z",
+                            fill: "rgb(130, 130, 256)"
+                        },
+                        // this determines the actual shape of the Shape
+                        new go.Binding("geometryString", "geo"),
+                        // allows the color to be determined by the node data
+                        new go.Binding("fill", "color"),
+                        // selection causes the stroke to be magenta instead of black
+                        new go.Binding("stroke", "isSelected", function(s) { return s ? "magenta" : "black"; }).ofObject(),
+                        // remember the size of this node
+                        new go.Binding("desiredSize", "size", go.Size.parse).makeTwoWay(go.Size.stringify),
+                        // can set the angle of this Node
+                        new go.Binding("angle", "angle").makeTwoWay()
+                    )
+                ));
 
 
 
 
 
 
-        //selection adornment template which is showed when the node is selected
+
+            //selection adornment template which is showed when the node is selected
         myDiagram.nodeTemplate.selectionAdornmentTemplate =
             $$(go.Adornment, go.Panel.Spot,
                 $$(go.Panel, go.Panel.Auto,
@@ -1213,9 +1425,9 @@ app.service("DiagramService",function(RuntimeService){
 
 
     },
-    //load palette
-    LoadPalette : function ()
-    {
+        //load palette
+        LoadPalette : function ()
+        {
         Palette.layout= $$(go.GridLayout,{ comparer: go.GridLayout.smartComparer });
         Palette.layout.wrappingColumn = NaN;
         Palette.layout.wrappingWidth=NaN;
@@ -1230,8 +1442,153 @@ app.service("DiagramService",function(RuntimeService){
 
             ]);
     },
-    LoadFlowPalette : function ()
-    {
+        LoadFurPalette: function(){
+            var wood = $$(go.Brush, go.Brush.Linear, { 0: "#964514", 1: "#5E2605" });
+            var wall = $$(go.Brush, go.Brush.Linear, { 0: "#A8A8A8", 1: "#545454" });
+            var blue = $$(go.Brush, go.Brush.Linear, { 0: "#42C0FB", 1: "#009ACD" });
+            var metal = $$(go.Brush, go.Brush.Linear, { 0: "#A8A8A8", 1: "#474747" });
+            var green = $$(go.Brush, go.Brush.Linear, { 0: "#9CCB19", 1: "#698B22" });
+            FurPalette.layout= $$(go.GridLayout,{ comparer: go.GridLayout.smartComparer });
+            FurPalette.layout.wrappingColumn = NaN;
+            FurPalette.layout.wrappingWidth=NaN;
+            FurPalette.nodeTemplateMap = myDiagram.nodeTemplateMap;  // share the templates used by myDiagram
+            FurPalette.groupTemplate = myDiagram.groupTemplate;
+
+            // specify the contents of the Palette
+            FurPalette.model = new go.GraphLinksModel(  // specify the contents of the Palette
+                [{
+                    category: "furniture",
+                    key: 1,
+                    geo: "F1 M0 0 L5,0 5,40 0,40 0,0z x M0,0 a40,40 0 0,0 -40,40 ",
+                    item: "left door",
+                    color: wall
+                },
+                    {
+                        category: "furniture",
+                        key: 2,
+                        geo: "F1 M0 0 L5,0 5,40 0,40 0,0z x M5,0 a40,40 0 0,1 40,40 ",
+                        item: "right door",
+                        color: wall
+                    },
+                    {
+                        category: "furniture",
+                        key: 3, angle: 90,
+                        geo: "F1 M0,0 L0,100 12,100 12,0 0,0z",
+                        item: "wall",
+                        color: wall
+                    },
+                    {
+                        category: "furniture",
+                        key: 4, angle: 90,
+                        geo: "F1 M0,0 L0,50 10,50 10,0 0,0 x M5,0 L5,50z",
+                        item: "window",
+                        color: "whitesmoke"
+                    },
+                    {
+                        category: "furniture",
+                        key: 5,
+                        geo: "F1 M0,0 L50,0 50,12 12,12 12,50 0,50 0,0 z",
+                        item: "corner",
+                        color: wall
+                    },
+                    {
+                        category: "furniture",
+                        key: 6,
+                        geo: "F1 M0 0 L40 0 40 40 0 40 0 0 x M0 10 L40 10 x M 8 10 8 40 x M 32 10 32 40 z",
+                        item: "arm chair",
+                        color: blue
+                    },
+                    {
+                        category: "furniture",
+                        key: 7,
+                        geo: "F1 M0 0 L80,0 80,40 0,40 0 0 x M0,10 L80,10 x M 7,10 7,40 x M 73,10 73,40 z",
+                        item: "couch",
+                        color: blue
+                    },
+                    {
+                        category: "furniture",
+                        key: 8,
+                        geo: "F1 M0 0 L30 0 30 30 0 30 z",
+                        item: "Side Table",
+                        color: wood
+                    },
+                    {
+                        category: "furniture",
+                        key: 9,
+                        geo: "F1 M0 0 L80,0 80,90 0,90 0,0 x M0,7 L80,7 x M 0,30 80,30 z",
+                        item: "queen bed",
+                        color: green
+                    },
+                    {
+                        category: "furniture",
+                        key: 10,
+                        geo: "F1 M5 5 L30,5 35,30 0,30 5,5 x F M0 0 L 35,0 35,5 0,5 0,0 z",
+                        item: "chair",
+                        color: wood
+                    },
+                    {
+                        category: "furniture",
+                        key: 11,
+                        geo: "F1 M0 0 L50,0 50,90 0,90 0,0 x M0,7 L50,7 x M 0,30 50,30 z",
+                        item: "twin bed",
+                        color: green
+                    },
+                    {
+                        category: "furniture",
+                        key: 12,
+                        geo: "F1 M0 0 L0 60 80 60 80 0z",
+                        item: "kitchen table",
+                        color: wood
+                    },
+                    {
+                        category: "furniture",
+                        key: 13,
+                        geo: "F1 M 0,0 a35,35 0 1,0 1,-1 z",
+                        item: "round table",
+                        color: wood
+                    },
+                    {
+                        category: "furniture",
+                        key: 14,
+                        geo: "F1 M 0,0 L35,0 35,30 0,30 0,0 x M 5,5 L 30, 5 30,25 5,25 5,5 x M 17,2 L 17,10 19,10 19,2 17,2 z",
+                        item: "kitchen sink",
+                        color: metal
+                    },
+                    {
+                        category: "furniture",
+                        key: 15,
+                        geo: "F1 M0,0 L55,0, 55,50, 0,50 0,0 x M 40,7 a 7,7 0 1 0 0.00001 0z x M 40,10 a 4,4 0 1 0 0.00001 0z x M 38,27 a 7,7 0 1 0 0.00001 0z x M 38,30 a 4,4 0 1 0 0.00001 0z x M 16,27 a 7,7 0 1 0 0.00001 0z xM 16,30 a 4,4 0 1 0 0.00001 0z x M 14,7 a 7,7 0 1 0 0.00001 0z x M 14,10 a 4,4 0 1 0 0.00001 0z",
+                        item: "stove",
+                        color: metal
+                    },
+                    {
+                        category: "furniture",
+                        key: 16,
+                        geo: "F1 M0,0 L55,0, 55,50, 0,50 0,0 x F1 M0,51 L55,51 55,60 0,60 0,51 x F1 M5,60 L10,60 10,63 5,63z",
+                        item: "refrigerator",
+                        color: metal
+                    },
+                    {
+                        category: "furniture",
+                        key: 17,
+                        geo: "F1 M0,0 100,0 100,40 0,40z",
+                        item: "bookcase",
+                        color: wood
+                    },
+                    {
+                        category: "furniture",
+                        key: 18,
+                        geo: "F1 M0,0 70,0 70,50 0,50 0,0 x F1 M15,58 55,58 55,62 15,62 x F1 M17,58 16,50 54,50 53,58z",
+                        item: "desk",
+                        color: wood
+                    }
+
+                ]
+            )
+
+        },
+        LoadFlowPalette : function ()
+        {
            FlowPalette.layout= $$(go.GridLayout,{ comparer: go.GridLayout.smartComparer });
            FlowPalette.layout.wrappingColumn = NaN;
            FlowPalette.layout.wrappingWidth=NaN;
@@ -1249,7 +1606,7 @@ app.service("DiagramService",function(RuntimeService){
 
                ]);
        },
-    LoadpFlowPalette: function(){
+        LoadpFlowPalette: function(){
         PflowPalette.layout= $$(go.GridLayout,{ comparer: go.GridLayout.smartComparer });
         PflowPalette.layout.wrappingColumn = NaN;
         PflowPalette.layout.wrappingWidth=NaN;
@@ -1268,523 +1625,653 @@ app.service("DiagramService",function(RuntimeService){
 
 
     },
+        LoadBasicShapePalette: function(){
+            var graybrush = $$(go.Brush, go.Brush.Linear, { 0.0: "white", 1.0: "gray" });
+            var lightText = 'whitesmoke';
+            BSPalette.layout= $$(go.GridLayout,{ comparer: go.GridLayout.smartComparer });
+            BSPalette.layout.wrappingColumn = NaN;
+            BSPalette.layout.wrappingWidth=NaN;
+            BSPalette.nodeTemplateMap = myDiagram.nodeTemplateMap;  // share the templates used by myDiagram
+            BSPalette.groupTemplate = myDiagram.groupTemplate;
+            var shapes=[];
+            // for each kind of figure, create a Shape using that figure
+            for (var k in go.Shape.FigureGenerators) {
+                instance ={category: "basicShape",figure: k}
 
-    LoadBasicShapePalette: function(){
-        var graybrush = $$(go.Brush, go.Brush.Linear, { 0.0: "white", 1.0: "gray" });
-        var lightText = 'whitesmoke';
-        BSPalette.layout= $$(go.GridLayout,{ comparer: go.GridLayout.smartComparer });
-        BSPalette.layout.wrappingColumn = NaN;
-        BSPalette.layout.wrappingWidth=NaN;
-        BSPalette.nodeTemplateMap = myDiagram.nodeTemplateMap;  // share the templates used by myDiagram
-        BSPalette.groupTemplate = myDiagram.groupTemplate;
-        var shapes=[];
-        // for each kind of figure, create a Shape using that figure
-        for (var k in go.Shape.FigureGenerators) {
-            instance ={category: "basicShape",figure: k}
+                shapes.push(instance)
 
-            shapes.push(instance)
+            }
 
-        }
+            BSPalette.model = new go.GraphLinksModel(  // specify the contents of the Palette
+                shapes
+                );
 
-        BSPalette.model = new go.GraphLinksModel(  // specify the contents of the Palette
-            shapes
-            );
-
-//        this Brush is shared by all of the Shapes
-//        var graybrush = $$(go.Brush, go.Brush.Linear, { 0.0: "white", 1.0: "gray" });
-//
-//        // for each kind of figure, create a Shape using that figure
-//        for (var k in go.Shape.FigureGenerators) {
-//            // ignore all-lower-case figure names
-//            if (k.toLowerCase() === k) continue;
-//            // add a Node consisting of a Shape with this kind of figure
-//            // and a TextBlock showing the figure name
-//            BSPalette.add(
-//                $$(go.Node, "Vertical",
-//                    {
-//                        locationSpot: go.Spot.Center, locationObjectName: "SHAPE",
-//                        selectionAdorned: false,  // no selection handle when selected
-//                        resizable: true, resizeObjectName: "SHAPE",  // user can resize the Shape
-//                        rotatable: true, rotateObjectName: "SHAPE",  // user can rotate the Shape without rotating the label
-//                        layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized  // don't re-layout when node changes size
-//                    },
-//                    $$(go.Shape,
-//                        {
-//                            name: "SHAPE",  // named so that the above properties can refer to this particular GraphObject
-//                            figure: k,  // the name of the Shape figure, which automatically gives the Shape a Geometry
-//                            width: 50, height: 50,
-//                            fill: graybrush, strokeWidth: 2
-//                        }),
-//                    $$(go.TextBlock,  // the label
-//                        { text: k })
-//                ));
-//        }
-
-
-    },
-
-    //load Settings
-    LoadSettings : function ()
-    {
-
-        myDiagram.allowZoom=true; // allow zoom ability
-        myDiagram.grid.visible=true;// show grid on the diagram
-        // when the user drags a node, also move/copy/delete the whole subtree starting with that node
-        myDiagram.commandHandler.copiesTree = true;
-        myDiagram.initialContentAlignment = go.Spot.Center;  // center the whole graph
-        myDiagram.initialAutoScale = go.Diagram.Uniform; //Diagram are scaled uniformly until the documentBounds fits in the view.
-        // Diagram.toolManager.linkingTool.direction = go.LinkingTool.ForwardsOnly;
-        myDiagram.initialContentAlignment = go.Spot.Center;
-
-        // temporary links used by LinkingTool and RelinkingTool are also orthogonal:
-        myDiagram.toolManager.linkingTool.temporaryLink.routing = go.Link.Orthogonal;
-        myDiagram.toolManager.relinkingTool.temporaryLink.routing = go.Link.Orthogonal;
-        // have mouse wheel events zoom in and out instead of scroll up and down
-        //myDiagram.toolManager.mouseWheelBehavior = go.ToolManager.WheelZoom;
-        myDiagram.toolManager.draggingTool.isGridSnapEnabled = true;    // enable dragging tool
-        myDiagram.toolManager.resizingTool.isGridSnapEnabled = true;    // enable resizing tool
-        myDiagram.undoManager.isEnabled = true; //enable undo ability
+    //        this Brush is shared by all of the Shapes
+    //        var graybrush = $$(go.Brush, go.Brush.Linear, { 0.0: "white", 1.0: "gray" });
+    //
+    //        // for each kind of figure, create a Shape using that figure
+    //        for (var k in go.Shape.FigureGenerators) {
+    //            // ignore all-lower-case figure names
+    //            if (k.toLowerCase() === k) continue;
+    //            // add a Node consisting of a Shape with this kind of figure
+    //            // and a TextBlock showing the figure name
+    //            BSPalette.add(
+    //                $$(go.Node, "Vertical",
+    //                    {
+    //                        locationSpot: go.Spot.Center, locationObjectName: "SHAPE",
+    //                        selectionAdorned: false,  // no selection handle when selected
+    //                        resizable: true, resizeObjectName: "SHAPE",  // user can resize the Shape
+    //                        rotatable: true, rotateObjectName: "SHAPE",  // user can rotate the Shape without rotating the label
+    //                        layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized  // don't re-layout when node changes size
+    //                    },
+    //                    $$(go.Shape,
+    //                        {
+    //                            name: "SHAPE",  // named so that the above properties can refer to this particular GraphObject
+    //                            figure: k,  // the name of the Shape figure, which automatically gives the Shape a Geometry
+    //                            width: 50, height: 50,
+    //                            fill: graybrush, strokeWidth: 2
+    //                        }),
+    //                    $$(go.TextBlock,  // the label
+    //                        { text: k })
+    //                ));
+    //        }
 
 
-        // allow double-click in background to create a new node
-        myDiagram.toolManager.clickCreatingTool.archetypeNodeData =DefaultPattern;
+        },
+        //load Settings
 
-        // allow the group command to execute
-        myDiagram.commandHandler.archetypeGroupData =
-        { key: "Group", isGroup: true, color: "blue" };
-        // modify the default group template to allow ungrouping
-        myDiagram.groupTemplate.ungroupable = true;
-        myDiagram.allowDrop = true;  // handle drag-and-drop from the Palette
-        // create the model data that will be represented in both diagrams simultaneously
-        myDiagram.model = $$(go.GraphLinksModel,
-            {
-                linkFromPortIdProperty: "fromPort",  // required information:
-                linkToPortIdProperty: "toPort"      // identifies data property names
-            });
-        model = myDiagram.model;
-        myDiagram.autoScrollRegion= (100, 100, 100, 100);
+        LoadSettings : function ()
+        {
 
-    } ,
+            myDiagram.allowZoom=true; // allow zoom ability
+            myDiagram.grid.visible=true;// show grid on the diagram
+            // when the user drags a node, also move/copy/delete the whole subtree starting with that node
+            myDiagram.commandHandler.copiesTree = true;
+            myDiagram.initialContentAlignment = go.Spot.Center;  // center the whole graph
+            myDiagram.initialAutoScale = go.Diagram.Uniform; //Diagram are scaled uniformly until the documentBounds fits in the view.
+            // Diagram.toolManager.linkingTool.direction = go.LinkingTool.ForwardsOnly;
+            myDiagram.initialContentAlignment = go.Spot.Center;
 
-    //load Link Template
-    LoadLinkTemplate : function ()
-    {
-        // define the link template
-        myDiagram.linkTemplate =
-            $$(go.Link,  // the whole link panel
-                { selectionAdornmentTemplate:
-                    $$(go.Adornment, //when the link is selected
-                        $$(go.Shape,  // the link path shape
-                            { isPanelMain: true, stroke: "dodgerblue", strokeWidth: 3 }),
-                        $$(go.Shape,  // the arrowhead
-                            { toArrow: "Standard", fill: "dodgerblue", stroke: null, scale: 1 })),
-                    routing: go.Link.Normal,
-                    curve: go.Link.Bezier,
-                    toShortLength: 2 },
+            // temporary links used by LinkingTool and RelinkingTool are also orthogonal:
+            myDiagram.toolManager.linkingTool.temporaryLink.routing = go.Link.Orthogonal;
+            myDiagram.toolManager.relinkingTool.temporaryLink.routing = go.Link.Orthogonal;
+            // have mouse wheel events zoom in and out instead of scroll up and down
+            //myDiagram.toolManager.mouseWheelBehavior = go.ToolManager.WheelZoom;
+            myDiagram.toolManager.draggingTool.isGridSnapEnabled = true;    // enable dragging tool
+            myDiagram.toolManager.resizingTool.isGridSnapEnabled = true;    // enable resizing tool
+            myDiagram.undoManager.isEnabled = true; //enable undo ability
 
+
+            // allow double-click in background to create a new node
+            myDiagram.toolManager.clickCreatingTool.archetypeNodeData =DefaultPattern;
+
+            // allow the group command to execute
+            myDiagram.commandHandler.archetypeGroupData =
+            { key: "Group", isGroup: true, color: "blue" };
+            // modify the default group template to allow ungrouping
+            myDiagram.groupTemplate.ungroupable = true;
+            myDiagram.allowDrop = true;  // handle drag-and-drop from the Palette
+            // create the model data that will be represented in both diagrams simultaneously
+            myDiagram.model = $$(go.GraphLinksModel,
                 {
-                    routing: go.Link.AvoidsNodes, // links will avoid nodes
-                    curve: go.Link.JumpOver, // when 2 links cross, 1 will jump over
-                    toShortLength: 2,
-                    relinkableFrom: true,  corner: 5,
-                    relinkableTo: true, reshapable:true //resegmentable: true,
-                    /* mouseDragEnter: domouseDragEnter */},
-                //when the link is not selected
-                $$(go.Shape,  //  the link shape
-                    { name: "LINKSHAPE", isPanelMain: true,stroke: "black", strokeWidth: 2,fill: "whitesmoke" },new go.Binding("stroke", "color").makeTwoWay()),
-                $$(go.Shape,  //  the arrowhead
-                    { name: "LINKSHAPE", toArrow: "Standard" },new go.Binding("stroke", "color").makeTwoWay()),
-                { toolTip:  //  define a tooltip for each link that displays its information
-                    $$(go.Adornment, go.Panel.Auto,
-                        $$(go.Shape, { fill: "#EFEFCC" }),
-                        $$(go.TextBlock, { margin: 4 },
-                            new go.Binding("text",  "" ,linkInfo))),
-                    contextMenu: partContextMenu });
-    },
+                    linkFromPortIdProperty: "fromPort",  // required information:
+                    linkToPortIdProperty: "toPort"      // identifies data property names
+                });
+            model = myDiagram.model;
+            myDiagram.autoScrollRegion= (100, 100, 100, 100);
+            myDiagram.commandHandler = new DrawCommandHandler();
 
-    //load Group Template
-    LoadGroupTemlate : function ()
-    {
-        //Define some fills and strokes
-        groupFill = "rgba(128,128,128,0.2)";
-        groupStroke = "gray";
-        dropFill = "pink";
-        dropStroke = "red";
-        // Groups consist of a title in the color given by the group node data
-        // above a translucent gray rectangle surrounding the member parts
+            myDiagram.commandHandler.arrowKeyBehavior = "move";
 
-        //Default group template , also indicate group's template when it's opened
-        myDiagram.groupTemplateMap.add("",
-            $$(go.Group, go.Panel.Vertical, new go.Binding("location", "loc").makeTwoWay(),
-                { selectionObjectName: "PANEL",
-                    locationObjectName:"PANEL",		// selection handle goes around shape, not label
-                    ungroupable: true ,  isSubGraphExpanded: true ,
-                    subGraphExpandedChanged: function(g) {      /* g.category = "Collapsed"; */      }},
-                $$("SubGraphExpanderButton"), // enable Ctrl-Shift-G to ungroup a selected Group
+            myDiagram.toolManager.rotatingTool = new RotateMultipleTool();
 
-                { // what to do when a drag-over or a drag-drop occurs on a Group
-                    mouseDragEnter: function(e, grp, prev) {
-                        highlightGroup(grp, grp.canAddMembers(grp.diagram.selection));
+//            myDiagram.toolManager.resizingTool = new ResizeMultipleTool();
+
+            myDiagram.toolManager.draggingTool = new GuidedDraggingTool();
+            myDiagram.toolManager.draggingTool.horizontalGuidelineColor = "blue";
+            myDiagram.toolManager.draggingTool.verticalGuidelineColor = "blue";
+            myDiagram.toolManager.draggingTool.centerGuidelineColor = "green";
+            myDiagram.toolManager.draggingTool.guidelineWidth = 1;
+
+
+
+
+
+
+        } ,
+        LoadFreeHand : function(){
+            // create drawing tool for myDiagram
+            var tool = new FreehandDrawingTool();
+            // provide the default JavaScript object for a new polygon in the model
+            tool.archetypePartData =
+            { stroke: "green", strokeWidth: 3 };
+            // install as first mouse-down-tool
+            myDiagram.toolManager.mouseDownTools.insertAt(0, tool);
+            LoadNodeTempForFreeHand();
+
+
+
+        },
+        LoadPolygonMode : function(){
+            // create polygon drawing tool for myDiagram
+            var tool = new PolygonDrawingTool();
+            // provide the default JavaScript object for a new polygon in the model
+            tool.archetypePartData =
+            { fill: "yellow", stroke: "blue", strokeWidth: 3 };
+            tool.isPolygon = true;  // for a polyline drawing tool set this property to false
+            // install as first mouse-down-tool
+            myDiagram.toolManager.mouseDownTools.insertAt(0, tool);
+            LoadNodeTemplateForPolygon()
+        },
+
+        //load Link Template
+        LoadLinkTemplate : function ()
+        {
+            // define the link template
+            myDiagram.linkTemplate =
+                $$(go.Link,  // the whole link panel
+                    { selectionAdornmentTemplate:
+                        $$(go.Adornment, //when the link is selected
+                            $$(go.Shape,  // the link path shape
+                                { isPanelMain: true, stroke: "dodgerblue", strokeWidth: 3 }),
+                            $$(go.Shape,  // the arrowhead
+                                { toArrow: "Standard", fill: "dodgerblue", stroke: null, scale: 1 })),
+                        routing: go.Link.Normal,
+                        curve: go.Link.Bezier,
+                        toShortLength: 2 },
+
+                    {
+                        routing: go.Link.AvoidsNodes, // links will avoid nodes
+                        curve: go.Link.JumpOver, // when 2 links cross, 1 will jump over
+                        toShortLength: 2,
+                        relinkableFrom: true,  corner: 5,
+                        relinkableTo: true, reshapable:true //resegmentable: true,
+                        /* mouseDragEnter: domouseDragEnter */},
+                    //when the link is not selected
+                    $$(go.Shape,  //  the link shape
+                        { name: "LINKSHAPE", isPanelMain: true,stroke: "black", strokeWidth: 2,fill: "whitesmoke" },new go.Binding("stroke", "color").makeTwoWay()),
+                    $$(go.Shape,  //  the arrowhead
+                        { name: "LINKSHAPE", toArrow: "Standard" },new go.Binding("stroke", "color").makeTwoWay()),
+                    { toolTip:  //  define a tooltip for each link that displays its information
+                        $$(go.Adornment, go.Panel.Auto,
+                            $$(go.Shape, { fill: "#EFEFCC" }),
+                            $$(go.TextBlock, { margin: 4 },
+                                new go.Binding("text",  "" ,linkInfo))),
+                        contextMenu: partContextMenu });
+        },
+
+        //load Group Template
+        LoadGroupTemlate : function ()
+        {
+            //Define some fills and strokes
+            groupFill = "rgba(128,128,128,0.2)";
+            groupStroke = "gray";
+            dropFill = "pink";
+            dropStroke = "red";
+            // Groups consist of a title in the color given by the group node data
+            // above a translucent gray rectangle surrounding the member parts
+
+            //Default group template , also indicate group's template when it's opened
+            myDiagram.groupTemplateMap.add("",
+                $$(go.Group, go.Panel.Vertical, new go.Binding("location", "loc").makeTwoWay(),
+                    { selectionObjectName: "PANEL",
+                        locationObjectName:"PANEL",		// selection handle goes around shape, not label
+                        ungroupable: true ,  isSubGraphExpanded: true ,
+                        subGraphExpandedChanged: function(g) {      /* g.category = "Collapsed"; */      }},
+                    $$("SubGraphExpanderButton"), // enable Ctrl-Shift-G to ungroup a selected Group
+
+                    { // what to do when a drag-over or a drag-drop occurs on a Group
+                        mouseDragEnter: function(e, grp, prev) {
+                            highlightGroup(grp, grp.canAddMembers(grp.diagram.selection));
+                        },
+                        mouseDragLeave: function(e, grp, next) {
+                            highlightGroup(grp, false);
+                        },
+                        mouseDrop: function(e, grp) {
+                            ok = grp.addMembers(grp.diagram.selection, true);
+                            if (!ok) grp.diagram.currentTool.doCancel();
+                        }
                     },
-                    mouseDragLeave: function(e, grp, next) {
-                        highlightGroup(grp, false);
-                    },
-                    mouseDrop: function(e, grp) {
-                        ok = grp.addMembers(grp.diagram.selection, true);
-                        if (!ok) grp.diagram.currentTool.doCancel();
-                    }
-                },
 
-                $$(go.Panel, go.Panel.Auto,
-                    { name: "PANEL" },
-                    $$(go.Shape, "Rectangle",
-                        // the rectangular shape around the members
-                        { name: "SHAPE",fill: groupFill, stroke: "gray", strokeWidth: 3 }),
-                    $$(go.Placeholder, { padding: 10 })),
-                $$(go.TextBlock,
-                    { font: "bold 12pt sans-serif",
-                        isMultiline: false,  // don't allow newlines in text
-                        editable: true,text: "group" },  // allow in-place editing by user
-                    new go.Binding("text", "text").makeTwoWay(),
-                    new go.Binding("stroke", "color")),		  // represents where the members are
-                { toolTip:
-                    $$(go.Adornment, go.Panel.Auto,
-                        $$(go.Shape, { fill: "#FFFFCC" }),
-                        $$(go.TextBlock, { margin: 4 },
-                            // bind to tooltip, not to Group.data, to allow access to Group properties
-                            new go.Binding("text", "", groupInfo).ofObject())),
-                    contextMenu: partContextMenu }));
+                    $$(go.Panel, go.Panel.Auto,
+                        { name: "PANEL" },
+                        $$(go.Shape, "Rectangle",
+                            // the rectangular shape around the members
+                            { name: "SHAPE",fill: groupFill, stroke: "gray", strokeWidth: 3 }),
+                        $$(go.Placeholder, { padding: 10 })),
+                    $$(go.TextBlock,
+                        { font: "bold 12pt sans-serif",
+                            isMultiline: false,  // don't allow newlines in text
+                            editable: true,text: "group" },  // allow in-place editing by user
+                        new go.Binding("text", "text").makeTwoWay(),
+                        new go.Binding("stroke", "color")),		  // represents where the members are
+                    { toolTip:
+                        $$(go.Adornment, go.Panel.Auto,
+                            $$(go.Shape, { fill: "#FFFFCC" }),
+                            $$(go.TextBlock, { margin: 4 },
+                                // bind to tooltip, not to Group.data, to allow access to Group properties
+                                new go.Binding("text", "", groupInfo).ofObject())),
+                        contextMenu: partContextMenu }));
 
-        //group 's template when it's collapsed
-        myDiagram.groupTemplateMap.add("Collapsed",
-            $$(go.Group,go.Panel.Vertical, new go.Binding("location", "loc").makeTwoWay(),
-                { selectionObjectName: "PANEL",isSubGraphExpanded: false,
-                    locationObjectName:"PANEL",
-                    subGraphExpandedChanged: function(g) { g.category = ""; }
-                },$$("SubGraphExpanderButton"),
+            //group 's template when it's collapsed
+            myDiagram.groupTemplateMap.add("Collapsed",
+                $$(go.Group,go.Panel.Vertical, new go.Binding("location", "loc").makeTwoWay(),
+                    { selectionObjectName: "PANEL",isSubGraphExpanded: false,
+                        locationObjectName:"PANEL",
+                        subGraphExpandedChanged: function(g) { g.category = ""; }
+                    },$$("SubGraphExpanderButton"),
 
-                $$(go.Shape,
-                    {name: "shape", fill:"white",stroke: "white",desiredSize: new go.Size(50, 50)}),
-                $$(go.Picture,
-                    {row: 0, column: 0 ,source: "queue.png"}),
-                $$(go.TextBlock,
-                    { font: "bold 12pt sans-serif",
-                        isMultiline: false,  // don't allow newlines in text
-                        editable: true })
-            ));
+                    $$(go.Shape,
+                        {name: "shape", fill:"white",stroke: "white",desiredSize: new go.Size(50, 50)}),
+                    $$(go.Picture,
+                        {row: 0, column: 0 ,source: "queue.png"}),
+                    $$(go.TextBlock,
+                        { font: "bold 12pt sans-serif",
+                            isMultiline: false,  // don't allow newlines in text
+                            editable: true })
+                ));
 
-    },
+        },
 
-    //background contextmenu
-    ContextMenu : function (){
-        // provide a context menu for the background of the Diagram, when not over any Part
-        myDiagram.contextMenu =
-            $$(go.Adornment, go.Panel.Vertical,
-                $$("ContextMenuButton",
-                    $$(go.TextBlock, "Paste"),
-                    { click: function(e, obj) { e.diagram.commandHandler.pasteSelection(e.diagram.lastInput.documentPoint); } },
-                    new go.Binding("visible", "", function(o) { return o.diagram.commandHandler.canPasteSelection(); }).ofObject()),
-                $$("ContextMenuButton",
-                    $$(go.TextBlock, "Undo"),
-                    { click: function(e, obj) { e.diagram.commandHandler.undo(); } },
-                    new go.Binding("visible", "", function(o) { return o.diagram.commandHandler.canUndo(); }).ofObject()),
-                $$("ContextMenuButton",
-                    $$(go.TextBlock, "Select all"),
-                    { click: function(e, obj) { e.diagram.commandHandler.selectAll(); } }
-                ),
-                $$("ContextMenuButton",
-                    $$(go.TextBlock, "Redo"),
-                    { click: function(e, obj) { e.diagram.commandHandler.redo(); } },
-                    new go.Binding("visible", "", function(o) { return o.diagram.commandHandler.canRedo(); }).ofObject()) );
+        //background contextmenu
+        ContextMenu : function (){
+            // provide a context menu for the background of the Diagram, when not over any Part
+            myDiagram.contextMenu =
+                $$(go.Adornment, go.Panel.Vertical,
+                    $$("ContextMenuButton",
+                        $$(go.TextBlock, "Paste"),
+                        { click: function(e, obj) { e.diagram.commandHandler.pasteSelection(e.diagram.lastInput.documentPoint); } },
+                        new go.Binding("visible", "", function(o) { return o.diagram.commandHandler.canPasteSelection(); }).ofObject()),
+                    $$("ContextMenuButton",
+                        $$(go.TextBlock, "Undo"),
+                        { click: function(e, obj) { e.diagram.commandHandler.undo(); } },
+                        new go.Binding("visible", "", function(o) { return o.diagram.commandHandler.canUndo(); }).ofObject()),
+                    $$("ContextMenuButton",
+                        $$(go.TextBlock, "Select all"),
+                        { click: function(e, obj) { e.diagram.commandHandler.selectAll(); } }
+                    ),
+                    $$("ContextMenuButton",
+                        $$(go.TextBlock, "Redo"),
+                        { click: function(e, obj) { e.diagram.commandHandler.redo(); } },
+                        new go.Binding("visible", "", function(o) { return o.diagram.commandHandler.canRedo(); }).ofObject()) );
 
-    },
+        },
 
-    SetCustomPanningTool : function(){
-       function CustomPanningTool() {
-           go.PanningTool.call(this);
-       }
-       go.Diagram.inherit(CustomPanningTool, go.PanningTool);
-
-       CustomPanningTool.prototype.canStart = function() {
-           if (!this.isEnabled) return false;
-           diagram = this.diagram;
-           if (diagram === null) return false;
-           if (!diagram.allowHorizontalScroll && !diagram.allowVerticalScroll) return false;
-           // require right button & that it has moved far enough away from the mouse down point, so it isn't a click
-           // CHANGED to check InputEvent.right INSTEAD OF InputEvent.left
-           if (!diagram.lastInput.right) return false;
-           // don't include the following check when this tool is running modally
-           if (diagram.currentTool !== this) {
-               // mouse needs to have moved from the mouse-down point
-               if (!this.isBeyondDragSize()) return false;
+        SetCustomPanningTool : function(){
+           function CustomPanningTool() {
+               go.PanningTool.call(this);
            }
-           return true;
-       };
+           go.Diagram.inherit(CustomPanningTool, go.PanningTool);
 
-       myDiagram.toolManager.panningTool = new CustomPanningTool();
+           CustomPanningTool.prototype.canStart = function() {
+               if (!this.isEnabled) return false;
+               diagram = this.diagram;
+               if (diagram === null) return false;
+               if (!diagram.allowHorizontalScroll && !diagram.allowVerticalScroll) return false;
+               // require right button & that it has moved far enough away from the mouse down point, so it isn't a click
+               // CHANGED to check InputEvent.right INSTEAD OF InputEvent.left
+               if (!diagram.lastInput.right) return false;
+               // don't include the following check when this tool is running modally
+               if (diagram.currentTool !== this) {
+                   // mouse needs to have moved from the mouse-down point
+                   if (!this.isBeyondDragSize()) return false;
+               }
+               return true;
+           };
+
+           myDiagram.toolManager.panningTool = new CustomPanningTool();
 
 
-   },
+       },
 
-    SetCustomLinkingTool : function(){
-        function CustomLinkingTool() {
-            go.LinkingTool.call(this);
-        }
-        go.Diagram.inherit(CustomLinkingTool, go.LinkingTool);
-
-        myDiagram.toolManager.linkingTool = new CustomLinkingTool();
-
-        CustomLinkingTool.prototype.doMouseUp = function() {
-            if (this.isActive && this.findTargetPort(this.isForwards) === null) {
-
-                Node = this.originalFromNode;
-                pos = new go.Point(this.diagram.lastInput.documentPoint.x,this.diagram.lastInput.documentPoint.y);
-                this.doCancel();
-                CreateNode=CreateNewNode(myDiagram,Node.data.category,Node.data.img,Node.data.text,pos);
-                newnode = myDiagram.findNodeForData(CreateNode);
-                ConnectTwoNodes(Node.data.key,newnode.data.key);
-
-            } else {
-
-                go.LinkingTool.prototype.doMouseUp.call(this);
-                //  Node = this.originalFromNode;
-                // test=this;
-                // alert(this.temporaryToNode+ " "+this.findTargetPort(this.isForwards));
-                //ConnectTwoNodes(Node.data.key,this.temporaryToNode.key);
-
+        SetCustomLinkingTool : function(){
+            function CustomLinkingTool() {
+                go.LinkingTool.call(this);
             }
-        };
+            go.Diagram.inherit(CustomLinkingTool, go.LinkingTool);
+
+            myDiagram.toolManager.linkingTool = new CustomLinkingTool();
+
+            CustomLinkingTool.prototype.doMouseUp = function() {
+                if (this.isActive && this.findTargetPort(this.isForwards) === null) {
+
+                    Node = this.originalFromNode;
+                    pos = new go.Point(this.diagram.lastInput.documentPoint.x,this.diagram.lastInput.documentPoint.y);
+                    this.doCancel();
+                    CreateNode=CreateNewNode(myDiagram,Node.data.category,Node.data.img,Node.data.text,pos);
+                    newnode = myDiagram.findNodeForData(CreateNode);
+                    ConnectTwoNodes(Node.data.key,newnode.data.key);
+
+                } else {
+
+                    go.LinkingTool.prototype.doMouseUp.call(this);
+                    //  Node = this.originalFromNode;
+                    // test=this;
+                    // alert(this.temporaryToNode+ " "+this.findTargetPort(this.isForwards));
+                    //ConnectTwoNodes(Node.data.key,this.temporaryToNode.key);
+
+                }
+            };
 
 
-    },
+        },
 
-    // DiagramListener when ExternalObjectsDropped
-    ExternalObjectsDroppedListener : function(RuntimeService,myDiagram){
-       myDiagram.addDiagramListener("ExternalObjectsDropped",
-           function(e)
-           {
-
-               JustAddedNode = e.subject.first();
-               if (myDiagram.model.nodeDataArray!=null)
+        // DiagramListener when ExternalObjectsDropped
+        ExternalObjectsDroppedListener : function(RuntimeService,myDiagram){
+           myDiagram.addDiagramListener("ExternalObjectsDropped",
+               function(e)
                {
+                   document.getElementById('myDiagram').focus();
+                   myDiagram.toolManager.draggingTool.reset();  // remove any guidelines
 
-
-                   for ( i=0; i<=RuntimeService.tempExternalLinkArray.length-1;i++)
+                   JustAddedNode = e.subject.first();
+                   if (myDiagram.model.nodeDataArray!=null)
                    {
 
-                       link = RuntimeService.tempExternalLinkArray[i];
-                       // alert(link.from+ " "+ link.to);
-                       if (IsExisted(link)==false && (link.from==JustAddedNode.data.key || link.to == JustAddedNode.data.key)
-                           &&(link.from!=link.to))
+
+                       for ( i=0; i<=RuntimeService.tempExternalLinkArray.length-1;i++)
                        {
 
-                           myDiagram.startTransaction("Add Link");
-                           myDiagram.model.addLinkData(link);
-                           myDiagram.commitTransaction("Add Link");
+                           link = RuntimeService.tempExternalLinkArray[i];
+                           // alert(link.from+ " "+ link.to);
+                           if (IsExisted(link)==false && (link.from==JustAddedNode.data.key || link.to == JustAddedNode.data.key)
+                               &&(link.from!=link.to))
+                           {
+
+                               myDiagram.startTransaction("Add Link");
+                               myDiagram.model.addLinkData(link);
+                               myDiagram.commitTransaction("Add Link");
+                           }
+
+                       }
+                       RuntimeService.tempExternalLinkArray.splice(0,RuntimeService.tempExternalLinkArray.length);
+
+                   }
+                   holdNode= myDiagram.selection.first();
+                   list = myDiagram.nodes;
+                   itr = list.iterator;
+                   count=0;
+
+                   //connect the hold node with the nodes in the area within the THRESHOLD by the templinks
+                   while (itr.next()) {
+                       val = itr.value;
+                       dist = (holdNode.data.loc.x-val.data.loc.x)*(holdNode.data.loc.x-val.data.loc.x)
+                           +(holdNode.data.loc.y-val.data.loc.y)*(holdNode.data.loc.y-val.data.loc.y);
+                       if (dist <= THRESHOLD && val!=holdNode && IsConnected(holdNode,val)==false &&
+                           !(holdNode instanceof go.Group)
+                           && !(val instanceof go.Group) )
+                       {
+                           newlink = { from: val.data.key, to: holdNode.data.key , color: "black"};
+                           len= myDiagram.model.linkDataArray.length;
+
+
+                           //make sure it doesn't link to itself
+                           if (holdNode.data.key!=val.data.key )
+                           {
+                               /* if (holdNode.data.loc.x>=val.data.loc.x)
+                                {
+                                newlink.fromPort="L";
+                                newlink.toPort="R";
+                                }
+                                else
+                                {
+                                newlink.fromPort="R";
+                                newlink.toPort="L";
+                                } */
+                               myDiagram.startTransaction("Add Link");
+                               myDiagram.model.addLinkData(newlink);
+                               myDiagram.commitTransaction("Add Link");
+
+
+                           }
                        }
 
                    }
-                   RuntimeService.tempExternalLinkArray.splice(0,RuntimeService.tempExternalLinkArray.length);
 
-               }
-               holdNode= myDiagram.selection.first();
-               list = myDiagram.nodes;
-               itr = list.iterator;
-               count=0;
-
-               //connect the hold node with the nodes in the area within the THRESHOLD by the templinks
-               while (itr.next()) {
-                   val = itr.value;
-                   dist = (holdNode.data.loc.x-val.data.loc.x)*(holdNode.data.loc.x-val.data.loc.x)
-                       +(holdNode.data.loc.y-val.data.loc.y)*(holdNode.data.loc.y-val.data.loc.y);
-                   if (dist <= THRESHOLD && val!=holdNode && IsConnected(holdNode,val)==false &&
-                       !(holdNode instanceof go.Group)
-                       && !(val instanceof go.Group) )
-                   {
-                       newlink = { from: val.data.key, to: holdNode.data.key , color: "black"};
-                       len= myDiagram.model.linkDataArray.length;
-
-
-                       //make sure it doesn't link to itself
-                       if (holdNode.data.key!=val.data.key )
+                   //remove all the templinks for each pair of nodes whose distance is above THRESHOLD
+                   list = myDiagram.nodes;
+                   itr = list.iterator;
+                   holdNode= myDiagram.selection.first();
+                   while (itr.next()) {
+                       val = itr.value;
+                       dist = (holdNode.data.loc.x-val.data.loc.x)*(holdNode.data.loc.x-val.data.loc.x)
+                           +(holdNode.data.loc.y-val.data.loc.y)*(holdNode.data.loc.y-val.data.loc.y);
+                       if (dist >THRESHOLD && HaveTempLink(holdNode.data.key,val.data.key)==true)
                        {
-                           /* if (holdNode.data.loc.x>=val.data.loc.x)
+                           link = GetLinkFromKeys(holdNode.data.key,val.data.key);
+                           if (link!=null)
+                           {
+                               //remove the link
+                               myDiagram.startTransaction("remove link");
+                               myDiagram.model.removeLinkData(link);
+                               myDiagram.commitTransaction("remove link");
+                               RuntimeService.tempLinkArray.pop(link);
+                           }
+
+
+                       }
+
+                   }
+
+
+                   //turn the color of all the link to black
+                   list = myDiagram.links;
+                   itr = list.iterator;
+                   while (itr.next()) {
+
+                       val = itr.value;
+                       shape = val.findObject("LINKSHAPE");
+                       if (shape === null) return;
+                       shape.stroke = "black";
+
+                   }
+
+
+               });
+
+       },
+
+
+        addChangedListener : function (myDiagram){
+            myDiagram.model.addChangedListener(function(e) {
+
+                if (e.change == go.ChangedEvent.Transaction
+                    && (e.propertyName === "CommittedTransaction" || e.propertyName === "FinishedUndo" || e.propertyName === "FinishedRedo")) {
+                    document.getElementById("mySavedModel").textContent = myDiagram.model.toJson();
+
+
+                }
+
+
+
+                // Add entries into the log
+                var changes = e.toString();
+                if (changes[0] !== "*") changes = "  " + changes;
+    //            changedLog.innerHTML += changes + "<br/>"
+    //            changedLog.scrollTop = changedLog.scrollHeight;
+
+            });
+        },
+        ChangedSelection : function(){
+            // notice whenever the selection may have changed
+            myDiagram.addDiagramListener("ChangedSelection", function(e) {
+                enableAll();
+            });
+        },
+
+        mouseDrop : function(RuntimeService,myDiagram)
+        {
+            myDiagram.mouseDrop= function (e){
+
+                // consider to undo the bridge
+                /* if (flagLinkEnter ==1 && TempLocLinkEnter!= null && GlobfromNode!=null && GlobtoNode!=null)
+                 {
+                 holdNode= myDiagram.selection.first();
+                 dist = SquaredDistance(TempLocLinkEnter,holdNode.data.loc);
+                 if (dist>BridgeTHRESHOLD)
+                 {
+                 //undo the bridge
+                 myDiagram.startTransaction("undo bridge");
+                 myDiagram.model.removeLinkData(LinkFromHold);
+                 tempExternalLinkArray.pop(LinkFromHold);
+                 myDiagram.model.removeLinkData(LinkHoldTo);
+                 tempExternalLinkArray.pop(LinkHoldTo);
+                 //add new links fromNode -> holdNode
+                 newlink = { from: GlobfromNode.data.key, to: GlobtoNode.data.key ,  color: "black"};
+                 myDiagram.model.addLinkData(newlink);
+                 myDiagram.commitTransaction("undo bridge");
+                 }
+                 //destroy temps and reset flag
+                 ResetTempForBridge();
+                 return;
+                 }  */
+                if (RuntimeService.tempLinkArray!=null)
+                {
+
+                    RuntimeService.tempLinkArray.splice(0,RuntimeService.tempLinkArray.length);
+
+                }
+
+                //remove all the templinks for each pair of nodes whose distance is above THRESHOLD
+                list = myDiagram.nodes;
+                itr = list.iterator;
+                holdNode= myDiagram.selection.first();
+                while (itr.next()) {
+                    val = itr.value;
+                    if (holdNode.data.loc!=null && holdNode.data.category==="pic")
+                    {
+                        dist = (holdNode.data.loc.x-val.data.loc.x)*(holdNode.data.loc.x-val.data.loc.x)
+                            +(holdNode.data.loc.y-val.data.loc.y)*(holdNode.data.loc.y-val.data.loc.y);
+                        if (dist >THRESHOLD && HaveTempLink(holdNode.data.key,val.data.key)==true)
+                        {
+                            link = GetLinkFromKeys(val.data.key,holdNode.data.key);
+                            if (link!=null)
                             {
-                            newlink.fromPort="L";
-                            newlink.toPort="R";
+                                //remove the link
+                                myDiagram.startTransaction("remove link");
+                                myDiagram.model.removeLinkData(link);
+                                myDiagram.commitTransaction("remove link");
+                                RuntimeService.tempLinkArray.pop(link);
                             }
-                            else
-                            {
-                            newlink.fromPort="R";
-                            newlink.toPort="L";
-                            } */
-                           myDiagram.startTransaction("Add Link");
-                           myDiagram.model.addLinkData(newlink);
-                           myDiagram.commitTransaction("Add Link");
 
 
-                       }
-                   }
-
-               }
-
-               //remove all the templinks for each pair of nodes whose distance is above THRESHOLD
-               list = myDiagram.nodes;
-               itr = list.iterator;
-               holdNode= myDiagram.selection.first();
-               while (itr.next()) {
-                   val = itr.value;
-                   dist = (holdNode.data.loc.x-val.data.loc.x)*(holdNode.data.loc.x-val.data.loc.x)
-                       +(holdNode.data.loc.y-val.data.loc.y)*(holdNode.data.loc.y-val.data.loc.y);
-                   if (dist >THRESHOLD && HaveTempLink(holdNode.data.key,val.data.key)==true)
-                   {
-                       link = GetLinkFromKeys(holdNode.data.key,val.data.key);
-                       if (link!=null)
-                       {
-                           //remove the link
-                           myDiagram.startTransaction("remove link");
-                           myDiagram.model.removeLinkData(link);
-                           myDiagram.commitTransaction("remove link");
-                           RuntimeService.tempLinkArray.pop(link);
-                       }
-
-
-                   }
-
-               }
-
-
-               //turn the color of all the link to black
-               list = myDiagram.links;
-               itr = list.iterator;
-               while (itr.next()) {
-
-                   val = itr.value;
-                   shape = val.findObject("LINKSHAPE");
-                   if (shape === null) return;
-                   shape.stroke = "black";
-
-               }
-
-
-           });
-
-   },
-
-
-    addChangedListener : function (myDiagram,undoDisplay){
-        myDiagram.model.addChangedListener(function(e) {
-
-            if (e.change == go.ChangedEvent.Transaction
-                && (e.propertyName === "CommittedTransaction" || e.propertyName === "FinishedUndo" || e.propertyName === "FinishedRedo")) {
-                document.getElementById("mySavedModel").textContent = myDiagram.model.toJson();
-
-
-            }
-
-
-
-            // Add entries into the log
-            var changes = e.toString();
-            if (changes[0] !== "*") changes = "  " + changes;
-//            changedLog.innerHTML += changes + "<br/>"
-//            changedLog.scrollTop = changedLog.scrollHeight;
-
-            // Modify the undoDisplay Diagram
-            if (e.propertyName === "CommittedTransaction") {
-                if (editToRedo != null) {
-                    // remove from the undo display diagram all nodes after editToRedo
-                    for (var i = editToRedo.data.index+1; i < editList.length; i++) {
-                        undoDisplay.remove(editList[i]);
-                    }
-                    editList = editList.slice(0, editToRedo.data.index);
-                    editToRedo = null;
-                }
-
-                var tx = e.object;
-                var txname = (tx !== null ? e.object.name : "");
-                var parentData = {text: txname, tag: e.object, index: editList.length - 1};
-                undoModel.addNodeData(parentData)
-
-                var parentKey = undoModel.getKeyForNodeData(parentData);
-
-                var parentNode = undoDisplay.findNodeForKey(parentKey);
-
-                if (tx !== null) {
-                    var allChanges = tx.changes;
-                    var itr = allChanges.iterator;
-                    var odd = true;
-                    while (itr.next()) {
-                        var change = itr.value;
-                        var childData = {
-                            color: (odd ? "white" : "#E0FFED"),
-                            text: change.toString()
-                        }
-                        odd = !odd;
-                        undoModel.addNodeData(childData)
-                        var childKey = undoModel.getKeyForNodeData(childData);
-                        undoModel.addLinkData({ from: parentKey, to: childKey });
-                    }
-                    undoDisplay.commandHandler.collapseTree(parentNode);
-                }
-            } else if (e.propertyName === "FinishedUndo" || e.propertyName === "FinishedRedo") {
-                var undoManager = model.undoManager;
-                if (editToRedo !== null) {
-                    editToRedo.isSelected = false;
-                    editToRedo = null;
-                }
-                // Find the node that represents the undo or redo state and select it
-                var nextEdit = undoManager.transactionToRedo;
-                if (nextEdit !== null) {
-                    var itr = undoDisplay.nodes;
-                    while (itr.next()) {
-                        var node = itr.value;
-                        if (node.data.tag === nextEdit) {
-                            node.isSelected = true;
-                            editToRedo = node;
-                            break;
                         }
                     }
+
                 }
+                //turn the color of all the link to black
+                list = myDiagram.links;
+                itr = list.iterator;
+
+                while (itr.next()) {
+
+                    val = itr.value;
+                    shape = val.findObject("LINKSHAPE");
+                    if (shape === null) return;
+                    shape.stroke = "black";
+
+                }
+
             }
+        },
+        DefineUndoDiagram : function($$){
 
 
+            undoDisplay =
+                   $$(go.Diagram, "undoDisplayCanvas",
+                       { allowMove: false,
+                           maxSelectionCount: 1 });
 
-        });
-    },
+               undoDisplay.nodeTemplate =
+                   $$(go.Node,
+                       $$("TreeExpanderButton",
+                           { width: 14,
+                               "ButtonBorder.fill": "whitesmoke" }),
+                       $$(go.Panel, go.Panel.Horizontal,
+                           { position: new go.Point(16, 0) },
+                           new go.Binding("background", "color"),
+                           $$(go.TextBlock, {margin: 2},
+                               new go.Binding("text", "text"))));
 
-    mouseDrop : function(RuntimeService,myDiagram)
-    {
-        myDiagram.mouseDrop= function (e){
+               undoDisplay.linkTemplate = $$(go.Link);  // not really used
 
-            // consider to undo the bridge
-            /* if (flagLinkEnter ==1 && TempLocLinkEnter!= null && GlobfromNode!=null && GlobtoNode!=null)
-             {
-             holdNode= myDiagram.selection.first();
-             dist = SquaredDistance(TempLocLinkEnter,holdNode.data.loc);
-             if (dist>BridgeTHRESHOLD)
-             {
-             //undo the bridge
-             myDiagram.startTransaction("undo bridge");
-             myDiagram.model.removeLinkData(LinkFromHold);
-             tempExternalLinkArray.pop(LinkFromHold);
-             myDiagram.model.removeLinkData(LinkHoldTo);
-             tempExternalLinkArray.pop(LinkHoldTo);
-             //add new links fromNode -> holdNode
-             newlink = { from: GlobfromNode.data.key, to: GlobtoNode.data.key ,  color: "black"};
-             myDiagram.model.addLinkData(newlink);
-             myDiagram.commitTransaction("undo bridge");
-             }
-             //destroy temps and reset flag
-             ResetTempForBridge();
-             return;
-             }  */
-            if (RuntimeService.tempLinkArray!=null)
+               undoDisplay.layout =
+                   $$(go.TreeLayout,
+                       { alignment: go.TreeLayout.AlignmentStart,
+                           angle: 0,
+                           compaction: go.TreeLayout.CompactionNone,
+                           layerSpacing: 16,
+                           layerSpacingParentOverlap: 1,
+                           nodeIndent: 2,
+                           nodeIndentPastParent: 0.88,
+                           nodeSpacing: 0,
+                           setsPortSpot: false,
+                           setsChildPortSpot: false,
+                           arrangementSpacing: new go.Size(2, 2)
+                       });
+
+               undoModel = new go.GraphLinksModel();  // initially empty
+               undoModel.isReadOnly = true;
+               undoDisplay.model = undoModel;
+
+           },
+
+
+        mouseDragOver : function(RuntimeService,myDiagram){ myDiagram.mouseDragOver=function(e){
+            THRESHOLD = 12500;
+            doc = e.documentPoint;
+            //node is being dragged
+            holdNode= myDiagram.selection.first();
+
+
+            list = myDiagram.nodes;
+            itr = list.iterator;
+            count=0;
+            if (holdNode!=null && holdNode.data.loc!=null)
             {
 
-                RuntimeService.tempLinkArray.splice(0,RuntimeService.tempLinkArray.length);
+                //connect the hold node with the nodes in the area within the THRESHOLD by the templinks
+                while (itr.next()) {
+                    val = itr.value;
+                    if (holdNode.data.loc!=null)
+                    {
+                        dist = (holdNode.data.loc.x-val.data.loc.x)*(holdNode.data.loc.x-val.data.loc.x)
+                            +(holdNode.data.loc.y-val.data.loc.y)*(holdNode.data.loc.y-val.data.loc.y);
+                        if (dist <= THRESHOLD && val!=holdNode && IsConnected(holdNode,val)==false &&
+                            !(holdNode instanceof go.Group)
+                            && !(val instanceof go.Group) )
+                        {
+                            newlink = { from: val.data.key, to: holdNode.data.key , color: "lightgray"};
+                            len= myDiagram.model.linkDataArray.length;
+                            flag =0;
 
+                            //make sure it doesn't link to itself
+                            if (holdNode.data.key!=val.data.key )
+                            {
+                                /* if (holdNode.data.loc.x>=val.data.loc.x)
+                                 {
+                                 newlink.fromPort="L";
+                                 newlink.toPort="R";
+                                 }
+                                 else
+                                 {
+                                 newlink.fromPort="R";
+                                 newlink.toPort="L";
+                                 } */
+                                myDiagram.startTransaction("Add Link");
+                                myDiagram.model.addLinkData(newlink);
+                                myDiagram.commitTransaction("Add Link");
+                                //save to tempLink
+
+                                RuntimeService.tempLinkArray.push(newlink);
+
+                            }
+                        }
+                    }
+                }
             }
+
+
 
             //remove all the templinks for each pair of nodes whose distance is above THRESHOLD
             list = myDiagram.nodes;
@@ -1792,7 +2279,7 @@ app.service("DiagramService",function(RuntimeService){
             holdNode= myDiagram.selection.first();
             while (itr.next()) {
                 val = itr.value;
-                if (holdNode.data.loc!=null && holdNode.data.category==="pic")
+                if (holdNode.data.loc!=null)
                 {
                     dist = (holdNode.data.loc.x-val.data.loc.x)*(holdNode.data.loc.x-val.data.loc.x)
                         +(holdNode.data.loc.y-val.data.loc.y)*(holdNode.data.loc.y-val.data.loc.y);
@@ -1811,194 +2298,53 @@ app.service("DiagramService",function(RuntimeService){
 
                     }
                 }
-
-            }
-            //turn the color of all the link to black
-            list = myDiagram.links;
-            itr = list.iterator;
-
-            while (itr.next()) {
-
-                val = itr.value;
-                shape = val.findObject("LINKSHAPE");
-                if (shape === null) return;
-                shape.stroke = "black";
-
             }
 
-        }
-    },
-    DefineUndoDiagram : function($$){
-
-
-        undoDisplay =
-               $$(go.Diagram, "undoDisplayCanvas",
-                   { allowMove: false,
-                       maxSelectionCount: 1 });
-
-           undoDisplay.nodeTemplate =
-               $$(go.Node,
-                   $$("TreeExpanderButton",
-                       { width: 14,
-                           "ButtonBorder.fill": "whitesmoke" }),
-                   $$(go.Panel, go.Panel.Horizontal,
-                       { position: new go.Point(16, 0) },
-                       new go.Binding("background", "color"),
-                       $$(go.TextBlock, {margin: 2},
-                           new go.Binding("text", "text"))));
-
-           undoDisplay.linkTemplate = $$(go.Link);  // not really used
-
-           undoDisplay.layout =
-               $$(go.TreeLayout,
-                   { alignment: go.TreeLayout.AlignmentStart,
-                       angle: 0,
-                       compaction: go.TreeLayout.CompactionNone,
-                       layerSpacing: 16,
-                       layerSpacingParentOverlap: 1,
-                       nodeIndent: 2,
-                       nodeIndentPastParent: 0.88,
-                       nodeSpacing: 0,
-                       setsPortSpot: false,
-                       setsChildPortSpot: false,
-                       arrangementSpacing: new go.Size(2, 2)
-                   });
-
-           undoModel = new go.GraphLinksModel();  // initially empty
-           undoModel.isReadOnly = true;
-           undoDisplay.model = undoModel;
-
-       },
-
-
-    mouseDragOver : function(RuntimeService,myDiagram){ myDiagram.mouseDragOver=function(e){
-        THRESHOLD = 12500;
-        doc = e.documentPoint;
-        //node is being dragged
-        holdNode= myDiagram.selection.first();
-
-
-        list = myDiagram.nodes;
-        itr = list.iterator;
-        count=0;
-        if (holdNode!=null && holdNode.data.loc!=null)
-        {
-
-            //connect the hold node with the nodes in the area within the THRESHOLD by the templinks
-            while (itr.next()) {
-                val = itr.value;
-                if (holdNode.data.loc!=null)
-                {
-                    dist = (holdNode.data.loc.x-val.data.loc.x)*(holdNode.data.loc.x-val.data.loc.x)
-                        +(holdNode.data.loc.y-val.data.loc.y)*(holdNode.data.loc.y-val.data.loc.y);
-                    if (dist <= THRESHOLD && val!=holdNode && IsConnected(holdNode,val)==false &&
-                        !(holdNode instanceof go.Group)
-                        && !(val instanceof go.Group) )
-                    {
-                        newlink = { from: val.data.key, to: holdNode.data.key , color: "lightgray"};
-                        len= myDiagram.model.linkDataArray.length;
-                        flag =0;
-
-                        //make sure it doesn't link to itself
-                        if (holdNode.data.key!=val.data.key )
-                        {
-                            /* if (holdNode.data.loc.x>=val.data.loc.x)
-                             {
-                             newlink.fromPort="L";
-                             newlink.toPort="R";
-                             }
-                             else
-                             {
-                             newlink.fromPort="R";
-                             newlink.toPort="L";
-                             } */
-                            myDiagram.startTransaction("Add Link");
-                            myDiagram.model.addLinkData(newlink);
-                            myDiagram.commitTransaction("Add Link");
-                            //save to tempLink
-
-                            RuntimeService.tempLinkArray.push(newlink);
-
-                        }
-                    }
-                }
-            }
-        }
 
 
 
-        //remove all the templinks for each pair of nodes whose distance is above THRESHOLD
-        list = myDiagram.nodes;
-        itr = list.iterator;
-        holdNode= myDiagram.selection.first();
-        while (itr.next()) {
-            val = itr.value;
-            if (holdNode.data.loc!=null)
+            // consider to undo the bridge
+            /* if (flagLinkEnter ==1 && TempLocLinkEnter!= null && GlobfromNode!=null && GlobtoNode!=null)
+             {
+             holdNode= myDiagram.selection.first();
+             dist = SquaredDistance(TempLocLinkEnter,holdNode.data.loc);
+             if (dist>BridgeTHRESHOLD)
+             {
+
+
+             //undo the bridge
+             myDiagram.startTransaction("undo bridge");
+             myDiagram.model.removeLinkData(LinkFromHold);
+             tempExternalLinkArray.pop(LinkFromHold);
+             myDiagram.model.removeLinkData(LinkHoldTo);
+             tempExternalLinkArray.pop(LinkHoldTo);
+             //add new links fromNode -> holdNode
+             newlink = { from: GlobfromNode.data.key, to: GlobtoNode.data.key ,  color: "black"};
+             myDiagram.model.addLinkData(newlink);
+             myDiagram.commitTransaction("undo bridge");
+             //destroy temps and reset flag
+             ResetTempForBridge();
+             }
+             } */
+            if (myDiagram.lastInput.up==true)
             {
-                dist = (holdNode.data.loc.x-val.data.loc.x)*(holdNode.data.loc.x-val.data.loc.x)
-                    +(holdNode.data.loc.y-val.data.loc.y)*(holdNode.data.loc.y-val.data.loc.y);
-                if (dist >THRESHOLD && HaveTempLink(holdNode.data.key,val.data.key)==true)
-                {
-                    link = GetLinkFromKeys(val.data.key,holdNode.data.key);
-                    if (link!=null)
-                    {
-                        //remove the link
-                        myDiagram.startTransaction("remove link");
-                        myDiagram.model.removeLinkData(link);
-                        myDiagram.commitTransaction("remove link");
-                        RuntimeService.tempLinkArray.pop(link);
-                    }
+                //turn the color of all the link to black
+                list = myDiagram.links;
+                itr = list.iterator;
 
+                while (itr.next()) {
+
+                    val = itr.value;
+                    shape = val.findObject("LINKSHAPE");
+                    if (shape === null) return;
+                    shape.stroke = "black";
 
                 }
             }
-        }
 
 
 
-
-        // consider to undo the bridge
-        /* if (flagLinkEnter ==1 && TempLocLinkEnter!= null && GlobfromNode!=null && GlobtoNode!=null)
-         {
-         holdNode= myDiagram.selection.first();
-         dist = SquaredDistance(TempLocLinkEnter,holdNode.data.loc);
-         if (dist>BridgeTHRESHOLD)
-         {
-
-
-         //undo the bridge
-         myDiagram.startTransaction("undo bridge");
-         myDiagram.model.removeLinkData(LinkFromHold);
-         tempExternalLinkArray.pop(LinkFromHold);
-         myDiagram.model.removeLinkData(LinkHoldTo);
-         tempExternalLinkArray.pop(LinkHoldTo);
-         //add new links fromNode -> holdNode
-         newlink = { from: GlobfromNode.data.key, to: GlobtoNode.data.key ,  color: "black"};
-         myDiagram.model.addLinkData(newlink);
-         myDiagram.commitTransaction("undo bridge");
-         //destroy temps and reset flag
-         ResetTempForBridge();
-         }
-         } */
-        if (myDiagram.lastInput.up==true)
-        {
-            //turn the color of all the link to black
-            list = myDiagram.links;
-            itr = list.iterator;
-
-            while (itr.next()) {
-
-                val = itr.value;
-                shape = val.findObject("LINKSHAPE");
-                if (shape === null) return;
-                shape.stroke = "black";
-
-            }
-        }
-
-
-
-    }}
+        }}
 
 
 
