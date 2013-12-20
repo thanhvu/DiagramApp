@@ -1,431 +1,527 @@
+<!DOCTYPE html>
 <html ng-app="app">
 <head>
+    <title>Diagram Editor</title>
+
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <link rel="stylesheet" type="text/css" href="css/angular-ui.css">
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/semantic.css">
+    <link rel="stylesheet" type="text/css" href="css/Spectrum.css">
+
+    <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700|Open+Sans:300italic,400,300,700'
+          rel='stylesheet' type='text/css'>
 </head>
-<!--<tabs>-->
-<!--<pane title="Localization">-->
-<!--Date: {{ '2012-04-01' | date:'fullDate' }} <br>-->
-<!--Currency: {{ 123456 | currency }} <br>-->
-<!--Number: {{ 98765.4321 | number }} <br>-->
-<!--</pane>-->
-<!--<pane title="Pluralization">-->
+<body>
+<div id="wrap"class="geEditor">
+<!--sidebar button-->
+<div class="ui right floated black launch button" >
+    <i class="list layout icon"></i>
+</div>
 
-<!--asdf-->
+<!--<div class="ui right floated black launch button" >-->
+<!--<i class="list layout icon"></i>    2-->
+<!--</div>-->
+<!--side bar-->
+<div ng-controller="sidebarCtrl" class="ui styled right sidebar">
+    <div id="tabs">
+        <ul>
+            <li><a href="#tabs-1">Node</a></li>
+            <li><a href="#tabs-2">Link</a></li>
+            <li><a href="#tabs-3">Comment</a></li>
 
-<!--</pane>-->
-<!--</tabs>-->
-<!--navigation bar-->
+        </ul>
+        <div id="tabs-1">
+            <!--node 's info-->
+            <a class="item">
+                <i class="home icon"></i>
+                <div id="myInfoNotSelected"> information here</div>
+                <div id="myInfoSelected">
+                    <div id="NodeCategory"></div>
+                    <p>X:<input id="NodeXLoc" ng-enter="ChangeXcor('x')" ng-model="corx"style ="width:40px; height:10px" type="text">
+                        Y:<input id="NodeYLoc" ng-enter="ChangeXcor('y')" ng-model="cory"style ="width:40px; height:10px" type="text"></p>
+                    <p>W:<input id="NodeWidth" ng-enter="ChangeWidth(width)" ng-model="nodewidth"style ="width:40px; height:10px" type="text" >
+                        H:<input id="NodeHeight" ng-enter="ChangeHeight(height)" ng-model="nodeheight"style ="width:40px; height:10px" type="text" ></p>
+                    <p>Angle:<input id="NodeAngle" ng-enter="ChangeXcor('x')" ng-model="angle"style ="width:40px; height:10px" type="text" readonly="true">
+                        Scale:<input id="NodeScale" ng-enter="ChangeXcor('y')" ng-model="scale"style ="width:40px; height:10px" type="text" readonly="true"></p>
+                    <br>
+                    <p style="float: left; margin-right: 10px;">Auto Line& Fill: <input type="text" id="custom" /></p>
+                    <p style="float: left; margin-right: 10px;">Line Color: <input type="text" id="linecustom" /></p>
+                    <p style="float: left; margin-right: 10px;">Fill Color: <input type="text" id="fillcustom" /></p>
+                    <p style="float: left; margin-right: 10px;">Background Color: <input type="text" id="backgroundcustom" /></p>
+                    <br><br><br><br><br><br><br><br><br><br>
+                </div>
+            </a>
+            <!--comment-->
+
+            <a class="item">
+                <!--<textarea>Your content here.</textarea>-->
+            </a>
+        </div>
+        <div id="tabs-2">
+            <p>Morbi tincidunt, dui sit amet facilisis feugiat, odio metus gravida ante, ut pharetra massa metus id nunc. Duis scelerisque molestie turpis. Sed fringilla, massa eget luctus malesuada, metus eros molestie lectus, ut tempus eros massa ut dolor. Aenean aliquet fringilla sem. Suspendisse sed ligula in ligula suscipit aliquam. Praesent in eros vestibulum mi adipiscing adipiscing. Morbi facilisis. Curabitur ornare consequat nunc. Aenean vel metus. Ut posuere viverra nulla. Aliquam erat volutpat. Pellentesque convallis. Maecenas feugiat, tellus pellentesque pretium posuere, felis lorem euismod felis, eu ornare leo nisi vel felis. Mauris consectetur tortor et purus.</p>
+        </div>
+        <div id="tabs-3">
+            <a class="item">
+                <h2>Comment:</h2>
+                <input type="text" ng-model="text" name="text" placeholder="add new comment here" ng-enter="submit()"/>
+        <span ng-repeat="comment in list">
+            <pre>{{comment.text}}</pre>
+        </span>
+            </a>
+        </div>
+
+    </div>
+
+
+</div>
+
+<!--end of sidebar-->
+<div id="Menu">
 <div id="navbar-app" class="navbar navbar-static" ng-controller="NavBarCtrl">
-    <div class="navbar-inner">
-        <div class="container" style="width: auto;">
-            <!--app 's name-->
-            <a class="brand" href="#">EIP_Diagram</a>
-            <!--menu-->
-            <ul class="nav" role="navigation">
-                <!--file menu-->
-                <li class="dropdown">
-                    <a id="file-menu" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">File </a>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="drop1">
-                        <li class="dropdown-submenu">
-                            <a tabindex="-1" href="#">New</a>
-                            <ul class="dropdown-menu">
-                                <li><a tabindex="-1" href="#" target="_blank">Blank Diagram</a></li>
-                                <li><a tabindex="-1" href="#">Copy of Diagram</a></li>
-                                <li role="presentation" class="divider"></li>
-                                <li><a tabindex="-1" href="#">From Template</a></li>
-                            </ul>
-                        </li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="open()">Open</a></li>
-                        <li role="presentation" class="divider"></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="saveDocument()">Save</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="saveDocumentAs()">Save as</a></li>
-                        <li role="presentation" class="divider"></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="ImportDocument()">Import</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="saveTextAsFile()">Export</a></li>
-                        <li role="presentation" class="divider"></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="removeDocument()">Delete</a></li>
+<div class="navbar-inner">
+    <div class="container" style="width: auto;">
+        <!--app 's name-->
+        <a class="brand" href="#">EIP_Diagram</a>
+        <!--menu-->
+        <ul class="nav" role="navigation">
+            <!--file menu-->
+            <li class="dropdown">
+                <a id="file-menu" href="#" role="button" class="dropdown-toggle " data-toggle="dropdown">File </a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="drop1">
+                    <li class="dropdown-submenu">
+                        <a tabindex="-1" href="#">New</a>
+                        <ul class="dropdown-menu">
+                            <li><a tabindex="-1" href="#" target="_blank">Blank Diagram</a></li>
+                            <li><a tabindex="-1" href="#">Copy of Diagram</a></li>
+                            <li role="presentation" class="divider"></li>
+                            <li><a tabindex="-1" ng-click="OpenTemplate()">From Template</a></li>
+                        </ul>
+                    </li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="open()">Open</a></li>
+                    <li role="presentation" class="divider"></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="saveDocument()">Save</a></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="saveDocumentAs()">Save as</a>
+                    </li>
+                    <li role="presentation" class="divider"></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="ImportDocument()">Import</a></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="saveTextAsFile()">Export</a></li>
+                    <li role="presentation" class="divider"></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" ng-click="removeDocument()">Delete</a></li>
 
-                    </ul>
-                </li>  <!--end of file menu-->
-                <!--Edit menu-->
-                <li class="dropdown">
-                    <a href="#" id="edit-menu" role="button" class="dropdown-toggle" data-toggle="dropdown">Edit </a>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="Undo()">Undo</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="Redo()">Redo</a></li>
-                        <li role="presentation" class="divider"></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="Cut()">Cut</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="Copy()">Copy</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="Paste()">Paste</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="Delete()">Delete</a></li>
-                        <li role="presentation" class="divider"></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="SelectAll()">Select All</a></li>
-                    </ul>
-                </li><!--end of edit menu-->
-                <!--view menu-->
-                <li class="dropdown">
-                    <a href="#" id="view-menu" role="button" class="dropdown-toggle" data-toggle="dropdown">View </a>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="ZoomtoFit()">Zoom To Fit</a></li>
-                        <li role="presentation" class="divider"></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">25%</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">50%</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">75%</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">100%</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">150%</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">200%</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">400%</a></li>
-                        <li role="presentation" class="divider"></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Zoom In</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Zoom Out</a></li>
-                    </ul>
-                </li><!--end of view menu-->
-                <!--Arrange menu-->
-                <li class="dropdown">
-                    <a href="#" id="Arrange-menu" role="button" class="dropdown-toggle" data-toggle="dropdown">Arrange </a>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
-                        <li class="dropdown-submenu">
-                            <a tabindex="-1" href="#">Layout</a>
-                            <ul class="dropdown-menu">
-                                <li><a tabindex="-1" href="#" ng-click="NormalLayout()">Normal</a></li>
-                                <li><a tabindex="-1" href="#" ng-click="GridLayout()">Grid</a></li>
-                                <li role="presentation" class="divider"></li>
-                                <li><a tabindex="-1" href="#" ng-click="TreeLayout()">Tree</a></li>
-                                <li><a tabindex="-1" href="#" ng-click="DigraphLayout()">Digraph</a></li>
-                                <li role="presentation" class="divider"></li>
-                                <li><a tabindex="-1" href="#" ng-click="CircularLayout()">Circular</a></li>
+                </ul>
+            </li>
+            <!--end of file menu-->
+            <!--Edit menu-->
+            <li class="dropdown">
+                <a href="#" id="edit-menu" role="button" class="dropdown-toggle" data-toggle="dropdown">Edit </a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="Undo()">Undo</a></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="Redo()">Redo</a></li>
+                    <li role="presentation" class="divider"></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="Cut()">Cut</a></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="Copy()">Copy</a></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="Paste()">Paste</a></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="Delete()">Delete</a>
+                    </li>
+                    <li role="presentation" class="divider"></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="SelectAll()">Select
+                        All</a></li>
+                </ul>
+            </li>
+            <!--end of edit menu-->
+            <!--view menu-->
+            <li class="dropdown">
+                <a href="#" id="view-menu" role="button" class="dropdown-toggle" data-toggle="dropdown">View </a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="ZoomtoFit()">Zoom To
+                        Fit</a></li>
+                    <li role="presentation" class="divider"></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">25%</a></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">50%</a></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">75%</a></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">100%</a></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">150%</a></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">200%</a></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">400%</a></li>
+                    <li role="presentation" class="divider"></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Zoom In</a></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Zoom Out</a></li>
+                </ul>
+            </li>
+            <!--end of view menu-->
+            <!--Arrange menu-->
+            <li class="dropdown">
+                <a href="#" id="Arrange-menu" role="button" class="dropdown-toggle" data-toggle="dropdown">Arrange </a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
+                    <li class="dropdown-submenu">
+                        <a tabindex="-1" href="#">Layout</a>
+                        <ul class="dropdown-menu">
+                            <li><a tabindex="-1" href="#" ng-click="NormalLayout()">Normal</a></li>
+                            <li><a tabindex="-1" href="#" ng-click="GridLayout()">Grid</a></li>
+                            <li role="presentation" class="divider"></li>
+                            <li><a tabindex="-1" href="#" ng-click="TreeLayout()">Tree</a></li>
+                            <li><a tabindex="-1" href="#" ng-click="DigraphLayout()">Digraph</a></li>
+                            <li role="presentation" class="divider"></li>
+                            <li><a tabindex="-1" href="#" ng-click="CircularLayout()">Circular</a></li>
 
-                            </ul>
-                        </li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="relayout()">Re-layout</a></li>
-                        <li role="presentation" class="divider"></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="Group()">Group</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="Ungroup()">UnGroup</a></li>
-                        <li role="presentation" class="divider"></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#" >Remove from Group</a></li>
+                        </ul>
+                    </li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#"
+                                               ng-click="relayout()">Re-layout</a></li>
+                    <li role="presentation" class="divider"></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="Group()">Group</a></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="Ungroup()">UnGroup</a>
+                    </li>
+                    <li role="presentation" class="divider"></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Remove from Group</a></li>
 
 
-                    </ul>
-                </li> <!--end of arrange menu-->
-                <!--Tool menu-->
-                <li class="dropdown">
-                    <a href="#" id="Tool-menu" role="button" class="dropdown-toggle" data-toggle="dropdown">Tool </a>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
-                        <li class="dropdown-submenu">
-                            <a tabindex="-1" href="#">Free Hand Drawing Tool</a>
-                            <ul class="dropdown-menu">
-                                <li><a tabindex="-1" href="#" ng-click="mode(true)">Draw Mode</a></li>
-                                <li><a tabindex="-1" href="#" ng-click="mode(false)">Selected Mode</a></li>
-                                <!--<li role="presentation" class="divider"></li>-->
-                                <!--<li><a tabindex="-1" href="#" ng-click="TreeLayout()">Save</a></li>-->
-                                <!--<li><a tabindex="-1" href="#" ng-click="DigraphLayout()">Load</a></li>-->
-                            </ul>
-                        </li>
-                        <li class="dropdown-submenu">
-                            <a tabindex="-1" href="#">Polygon Drawing Tool</a>
-                            <ul class="dropdown-menu">
-                                <li><a tabindex="-1" href="#" ng-click="PolyMode(true,true)">Draw Polygon mode</a></li>
-                                <li><a tabindex="-1" href="#" ng-click="PolyMode(true,false)">Draw Polyline mode</a></li>
+                </ul>
+            </li>
+            <!--end of arrange menu-->
+            <!--Tool menu-->
+            <li class="dropdown">
+                <a href="#" id="Tool-menu" role="button" class="dropdown-toggle" data-toggle="dropdown">Tool </a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
+                    <li class="dropdown-submenu">
+                        <a tabindex="-1" href="#">Free Hand Drawing Tool</a>
+                        <ul class="dropdown-menu">
+                            <li><a tabindex="-1" href="#" ng-click="mode(true)">Draw Mode</a></li>
+                            <li><a tabindex="-1" href="#" ng-click="mode(false)">Selected Mode</a></li>
+                            <!--<li role="presentation" class="divider"></li>-->
+                            <!--<li><a tabindex="-1" href="#" ng-click="TreeLayout()">Save</a></li>-->
+                            <!--<li><a tabindex="-1" href="#" ng-click="DigraphLayout()">Load</a></li>-->
+                        </ul>
+                    </li>
+                    <li class="dropdown-submenu">
+                        <a tabindex="-1" href="#">Polygon Drawing Tool</a>
+                        <ul class="dropdown-menu">
+                            <li><a tabindex="-1" href="#" ng-click="PolyMode(true,true)">Draw Polygon mode</a></li>
+                            <li><a tabindex="-1" href="#" ng-click="PolyMode(true,false)">Draw Polyline mode</a></li>
 
-                            </ul>
-                        </li>
-                    </ul>
-                </li> <!--end of Tool menu-->
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <!--end of Tool menu-->
 
-                <!--Align menu-->
-                <li class="dropdown">
-                    <a href="#" id="align-menu" role="button" class="dropdown-toggle" data-toggle="dropdown">Align </a>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="AlignLeft()">Left side</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="AlignRight()">Right side</a></li>
-                        <li role="presentation" class="divider"></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="AlignTop()">Top</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="AlignBottom()">Bottom</a></li>
-                        <li role="presentation" class="divider"></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="AlignCenterX()">Center X</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="AlignCenterY()">Center Y</a></li>
-                        <li role="presentation" class="divider"></li>
-                    </ul>
-                </li> <!--end of Align menu-->
+            <!--Align menu-->
+            <li class="dropdown">
+                <a href="#" id="align-menu" role="button" class="dropdown-toggle" data-toggle="dropdown">Align </a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="AlignLeft()">Left
+                        side</a></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="AlignRight()">Right
+                        side</a></li>
+                    <li role="presentation" class="divider"></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="AlignTop()">Top</a></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#"
+                                               ng-click="AlignBottom()">Bottom</a></li>
+                    <li role="presentation" class="divider"></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="AlignCenterX()">Center
+                        X</a></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="AlignCenterY()">Center
+                        Y</a></li>
+                    <li role="presentation" class="divider"></li>
+                </ul>
+            </li>
+            <!--end of Align menu-->
 
-                <!--Rotate menu-->
-                <li class="dropdown">
-                    <a href="#" id="rotate-menu" role="button" class="dropdown-toggle" data-toggle="dropdown">Rotate </a>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="Rotate(45)">45°</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="Rotate(-45)">-45°</a></li>
-                        <li role="presentation" class="divider"></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="Rotate(90)">90°</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="Rotate(-90)">-90°</a></li>
-                        <li role="presentation" class="divider"></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="Rotate(180)">180</a></li>
+            <!--Rotate menu-->
+            <li class="dropdown">
+                <a href="#" id="rotate-menu" role="button" class="dropdown-toggle" data-toggle="dropdown">Rotate </a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="drop2">
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="Rotate(45)">45°</a></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="Rotate(-45)">-45°</a>
+                    </li>
+                    <li role="presentation" class="divider"></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="Rotate(90)">90°</a></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="Rotate(-90)">-90°</a>
+                    </li>
+                    <li role="presentation" class="divider"></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="Rotate(180)">180</a>
+                    </li>
 
-                    </ul>
-                </li> <!--end of Align menu-->
+                </ul>
+            </li>
+            <!--end of Align menu-->
 
-            </ul> <!--/end of menu-->
+        </ul>
 
-        </div> <!--end of containner-->
+        <!--/end of menu-->
     </div>
+    <!--end of containner-->
+</div>
 
-    <!--open diaglog-->
-    <div id="openDocument" class="draggable">
-        <div id="openDraggableHandle" class="handle">Open File</div>
-        <div id="openText" class="elementText">Choose file to open...</div>
-        <select id="mySavedFiles" class="mySavedFiles" ></select>
-        <br />
-        <button id="openBtn" class="elementBtn" type="button" ng-click="load()" style="margin-left:70px">Open</button>
-        <button id="cancelBtn"class="elementBtn" type="button" ng-click="closeElement()" >Cancel</button>
+<!--open diaglog-->
+<div class="ui modal open">
+    <i class="close icon"></i>
+
+    <div class="header">
+        Open File
     </div>
+    <div class="content">
+        <div class="left">
+            <div id="openText" class="elementText">Choose file to open...</div>
+            <select id="mySavedFiles" class="mySavedFiles"></select>
+        </div>
 
-    <div id="removeDocument" class="draggable">
-        <div id="removeDraggableHandle" class="handle">Delete File</div>
-        <div id="removeText" class="elementText">Choose file to remove...</div>
-        <select id="mySavedFiles2" class="mySavedFiles" ></select>
-        <br />
-        <button id="removeBtn" class="elementBtn" type="button" ng-click="removeFile()" style="margin-left:70px">Remove</button>
-        <button id="cancelBtn2"class="elementBtn" type="button" ng-click="closeElement()">Cancel</button>
     </div>
-    <div id="importDocument" class="draggable">
-        <div id="ImportDraggableHandle" class="handle">Import</div>
-        <div id="ImportText" class="elementText">Choose file to import...</div>
-        <input type="file" id="fileToLoad">
-        <button ng-click="loadFileAsText()">Open</button>
-        <button id="cancelBtn3"class="elementBtn" type="button" ng-click="closeElement()">Cancel</button>
-    </div>
-</div> <!-- /end-of-nav-bar-->
-
-<div ng-controller="buttonCtrl" class="navbar">
-    <div class="navbar-inner">
-        <div class="btn-group" id="textAlignment" data-toggle="buttons-radio" style="margin: 0 13px;">
-            <button class="btn" type="button" value="left" ng-click="textManipulation('left');"><i class="icon-align-left"></i></button>
-            <button class="btn" type="button" value="center" ng-click="textManipulation('center');"><i class="icon-align-center"></i></button>
-            <button class="btn" type="button" value="right" ng-click="textManipulation('right');"><i class="icon-align-right"></i></button>
-        </div>
-        <div class="btn-group" id="textManipulation" style="margin: 5px 13px;">
-            <button id="bold" class="btn" type="button" ng-click="textManipulation('bold');" data-toggle="buttons-checkbox"><i class="icon-bold"></i></button>
-            <button id="italic" class="btn" type="button" ng-click="textManipulation('italic');" data-toggle="buttons-checkbox"><i class="icon-italic"></i></button>
-            <button class="btn" type="button" ng-click="textManipulation('bigger');"><i class="icon-plus"></i></button>
-            <button class="btn" type="button" ng-click="textManipulation('smaller');"><i class="icon-minus"></i></button>
-
-        </div>
-        <div class="btn-group"style="margin: 5px 13px;">
-            <zoomout></zoomout>
-            <ZoomIn></ZoomIn>
-            <Delete></Delete>
-
-
-        </div>
-
-
-
-        <div class="btn-group" style="margin: 5px 13px;">
-            <button type="button" class="btn " ng-model="radioModel" btn-radio="'Normal'"
-            ng-click="mode(false)">normal</button>
-            <button type="button" class="btn " ng-model="radioModel" btn-radio="'Freehand'"
-            ng-click="LoadFreeHand()"><i class="icon-pencil"></i></button>
-            <button type="button" class="btn " ng-click="LoadPolygon()" ng-model="radioModel" btn-radio="'Polygon'"><img src="img\polygon.png"></button>
-        </div>
-
-        <div class="btn-group" style="margin: 5px 13px;">
-            <button type="button" class="btn " ng-model="arrowkeyModel" btn-radio="'Move'"
-                    ng-click="arrowMode('Move')">move</button>
-            <button type="button" class="btn " ng-model="arrowkeyModel" btn-radio="'Select'"
-                    ng-click="arrowMode('Select')">select</button>
-            <button type="button" class="btn " ng-click="arrowMode('Scroll')" ng-model="arrowkeyModel" btn-radio="'Scroll'">scroll</button>
-        </div>
-
-        <!--<input type="file" id="fileToLoad"><button ng-click="loadFileAsText()">Load Selected File</button>-->
-
+    <div class="actions">
+        <div class="ui button">Cancel</div>
+        <div class="ui button">OK</div>
     </div>
 </div>
 
-<!--button -->
-<!--<ZoomOut></ZoomOut>-->
-<!--<ZoomIn></ZoomIn>-->
-<!--<SelectAll></SelectAll>-->
-<!--<Cut></Cut>-->
-<!--<Copy></Copy>-->
-<!--<Paste></Paste>-->
-<!--<Delete></Delete>-->
-<!--<Group></Group>-->
-<!--<UnGroup></UnGroup>-->
-<!--<Undo></Undo>-->
-<!--<Redo></Redo>-->
-<!--<ZoomtoFit></ZoomtoFit>-->
+<!--template diaglog-->
+<div class=" large ui modal template">
+    <i class="close icon"></i>
+
+    <div class="header">
+        Templates
+    </div>
+    <div class="content">
+        <div class="left">
+            <div id="TemplateText" class="elementText">Choose file to open...</div>
+            <select ng-model="templateModel" ng-options ="item.name for item in TemplateList"  ng-change="LoadTemplateDiagram()"></select>
 
 
+            <!--<select id="mySavedFiles" class="mySavedFiles"></select>-->
+        </div>
+        <div class="right">
+            <div id="template"></div>
 
-<!--end of button-->
-<!--<br>-->
-<!--default pattern holder-->
-<!--<dpholder></dpholder>-->
-<!--layout holder-->
-<!--<layoutholder></layoutholder>-->
-<!--<br>-->
-<!--<br>-->
+        </div>
 
-<div style="border:1px solid #aaaaaa;">
-    <div id="navigator"></div>
-    <div id="Palettediv">
-        <wij-tabs collapsible="true">
-            <ul>
-                <li><a href="#EIP"><b>EIP</b></a></li>
-                <li><a href="#basicShape"><b>basic shape</b></a></li>
-                <li><a href="#flow"><b>Flow Chart</b></a></li>
-                <li><a href="#pflow"><b>Page flow</b></a></li>
-                <li><a href="#furniture"><b>furniture</b></a></li>
-            </ul>
-            <div id="EIP">
-                <div id="myPalette" style="overflow:scroll"></div>
-            </div>
-            <div id="basicShape">
-                <div id="bsPalette"></div>
-            </div>
-            <div id="flow">
-                <div id="flowPalette"></div>
-            </div>
-            <div id="pflow">
-                <div id="pflowPalette"></div>
-            </div>
-            <div id="furniture">
-                <div id="furPalette"></div>
-            </div>
-        </wij-tabs>
+    </div>
+    <div class="actions">
+        <div class="ui button">Cancel</div>
+        <div class="ui button" ng-click="LoadChosenTemplate()">OK</div>
+    </div>
+</div>
+<!--<div id="openDocument" class="draggable">-->
+<!--<div id="openDraggableHandle" class="handle">Open File</div>-->
+<!--<div id="openText" class="elementText">Choose file to open...</div>-->
+<!--<select id="mySavedFiles" class="mySavedFiles" ></select>-->
+<!--<br />-->
+<!--<button id="openBtn" class="elementBtn" type="button" ng-click="load()" style="margin-left:70px">Open</button>-->
+<!--<button id="cancelBtn"class="elementBtn" type="button" ng-click="closeElement()" >Cancel</button>-->
+<!--</div>-->
+<div class="ui modal remove">
+    <i class="close icon"></i>
 
+    <div class="header">
+        Delete File
+    </div>
+    <div class="content">
+        <div class="left">
+            <div id="removeText" class="elementText">Choose file to remove...</div>
+            <select id="mySavedFiles2" class="mySavedFiles"></select>
+        </div>
+
+    </div>
+    <div class="actions">
+        <div class="ui button">Cancel</div>
+        <div class="ui button">OK</div>
     </div>
 </div>
 
-<br>
+<!--<div id="removeDocument" class="draggable">-->
+<!--<div id="removeDraggableHandle" class="handle">Delete File</div>-->
+<!--<div id="removeText" class="elementText">Choose file to remove...</div>-->
+<!--<select id="mySavedFiles2" class="mySavedFiles" ></select>-->
+<!--<br />-->
+<!--<button id="removeBtn" class="elementBtn" type="button" ng-click="removeFile()" style="margin-left:70px">Remove</button>-->
+<!--<button id="cancelBtn2"class="elementBtn" type="button" ng-click="closeElement()">Cancel</button>-->
+<!--</div>-->
+<div class="ui modal import">
+    <i class="close icon"></i>
 
-<wij-splitter splitter-distance="420" orientation="vertical" style="height:700px;border:2px solid grey" >
-    <div>
-        <wij-tabs alignment="left" collapsible="true">
-            <ul>
-                <li><a href="#atl"><b>UndoLog</b></a></li>
-                <!--<li><a href="#ord"><b>changedLog</b></a></li>-->
-                <li><a href="#lax"><b>Editor</b></a></li>
-                <li><a href="#savdiv"><b>JSON</b></a></li>
+    <div class="header">
+        Import File
+    </div>
+    <div class="content">
+        <div class="left">
+            <div id="ImportText" class="elementText">Choose file to import...</div>
+            <input type="file" id="fileToLoad">
+        </div>
 
-            </ul>
-            <div id="atl">
-                <!--<div id="undoDisplayCanvas" style="height:30%; border: solid 1px gray"></div>-->
+    </div>
+    <div class="actions">
+        <div class="ui button">Cancel</div>
+        <div class="ui button">OK</div>
+    </div>
+</div>
+
+<!--<div id="importDocument" class="draggable">-->
+<!--<div id="ImportDraggableHandle" class="handle">Import</div>-->
+<!--<div id="ImportText" class="elementText">Choose file to import...</div>-->
+<!--<input type="file" id="fileToLoad">-->
+<!--<button ng-click="loadFileAsText()">Open</button>-->
+<!--<button id="cancelBtn3"class="elementBtn" type="button" ng-click="closeElement()">Cancel</button>-->
+<!--</div>-->
+</div>
+</div>
+<div id="toolbar">
+    <div ng-controller="buttonCtrl" class="navbar">
+        <div class="navbar-inner">
+            <div class="btn-group" id="textAlignment" data-toggle="buttons-radio" style="margin: 0 13px;">
+                <button class="btn" type="button" value="left" ng-click="textManipulation('left');"><i
+                        class="icon-align-left"></i></button>
+                <button class="btn" type="button" value="center" ng-click="textManipulation('center');"><i
+                        class="icon-align-center"></i></button>
+                <button class="btn" type="button" value="right" ng-click="textManipulation('right');"><i
+                        class="icon-align-right"></i></button>
+            </div>
+            <div class="btn-group" id="textManipulation" style="margin: 5px 13px;">
+                <button id="bold" class="btn" type="button" ng-click="textManipulation('bold');"
+                        data-toggle="buttons-checkbox"><i class="icon-bold"></i></button>
+                <button id="italic" class="btn" type="button" ng-click="textManipulation('italic');"
+                        data-toggle="buttons-checkbox"><i class="icon-italic"></i></button>
+                <button class="btn" type="button" ng-click="textManipulation('bigger');"><i class="icon-plus"></i>
+                </button>
+                <button class="btn" type="button" ng-click="textManipulation('smaller');"><i class="icon-minus"></i>
+                </button>
+
+            </div>
+            <div class="btn-group" style="margin: 5px 13px;">
+                <zoomout></zoomout>
+                <ZoomIn></ZoomIn>
+                <Delete></Delete>
 
 
             </div>
-            <!--<div id="ord">-->
-                <!--<div id="modelChangedLog" style="height:30%;border: solid 1px gray; font-family:Monospace; font-size:11px; overflow:scroll"></div>-->
-            <!--</div>-->
 
 
-            <div id="lax">
-                <!--<textarea autofocus placeholder="Editor \ s area...." id="editor"   style=" height:30%;width:100%;border: solid 1px gray ;overflow:scroll " wrap="SOFT" ></textarea>-->
+            <div class="btn-group" style="margin: 5px 13px;">
+                <button type="button" class="btn " ng-model="radioModel" btn-radio="'Normal'"
+                        ng-click="mode(false)">normal
+                </button>
+                <button type="button" class="btn " ng-model="radioModel" btn-radio="'Freehand'"
+                        ng-click="LoadFreeHand()"><i class="icon-pencil"></i></button>
+                <button type="button" class="btn " ng-click="LoadPolygon()" ng-model="radioModel" btn-radio="'Polygon'">
+                    <img src="img\polygon.png"></button>
             </div>
 
-            <div id="savdiv">
-                <!--<saveboard></saveboard>-->
-
+            <div class="btn-group" style="margin: 5px 13px;">
+                <button type="button" class="btn " ng-model="arrowkeyModel" btn-radio="'Move'"
+                        ng-click="arrowMode('Move')">move
+                </button>
+                <button type="button" class="btn " ng-model="arrowkeyModel" btn-radio="'Select'"
+                        ng-click="arrowMode('Select')">select
+                </button>
+                <button type="button" class="btn " ng-click="arrowMode('Scroll')" ng-model="arrowkeyModel"
+                        btn-radio="'Scroll'">scroll
+                </button>
+            </div>
+            <div class="btn-group" style="margin: 5px 13px;">
+                <div class="btn" onclick="TogetherJS(this); return false;">Start collaboration</div>
             </div>
 
 
-        </wij-tabs>
+            <!--<input type="file" id="fileToLoad"><button ng-click="loadFileAsText()">Load Selected File</button>-->
 
-
-
-
-        <!--<div id="info" style="height:30%; border: solid 1px gray">-->
-            <!--type <input type="text" readonly="true" ng-model="type">{{type}}</input>-->
-        <!--</div>-->
+        </div>
     </div>
-    <div >
-        <div id="currentFile">(Unsaved File)</div>
-        <div id="myDiagram"></div>
+</div>
+<div ng-controller="DiagramCtrl">
+    <div id="mybody">
+        <div id="splitterContainer">
+            <div id="leftPane">
+                <div id="rightSplitterContainer" style="height:100%">
+                    <div id="rightTopPane">
+                        <search></search>
+                        <div type="button" class="btn "ng-click="ReLoad()"><i class="icon-refresh"></i></div>
+
+                        <!--<div style="height:5%;width: 100%;background:#bac8dc">Palette</div>-->
+                        <div id="accordion" style="height: 200%">
+                            <div class="group" >
+                                <h3>Patterns</h3>
+
+                                <div ng-click="Reload()">
+                                    <div id="myPalette">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="group" ng-click="Reload()">
+                                <h3>Basic shape</h3>
+
+                                <div>
+                                    <div id="bsPalette"></div>
+                                </div>
+                            </div>
+                            <div class="group">
+                                <h3>flow chart</h3>
+
+                                <div>
+                                    <div id="flowPalette"></div>
+                                </div>
+                            </div>
+                            <div class="group">
+                                <h3>page flow</h3>
+
+                                <div>
+                                    <div id="pflowPalette"></div>
+                                </div>
+                            </div>
+                            <div class="group">
+                                <h3>furniture</h3>
+
+                                <div>
+                                    <div id="furPalette"></div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <!--#rightTopPane-->
+                    <!--<div id="rightBottomPane">-->
+                    <!--<div style="height:10%;background:#bac8dc">Overview</div>-->
+                    <div id="navigator"></div>
+                    <!--</div>-->
+                    <!-- #rightBottomPane--></div>
+
+            </div>
+            <!-- #leftPane -->
+            <div id="rightPane" class="geEditor">
+                <div id="currentFile">(Unsaved File)</div>
+                <div id="myDiagram" class="geEditor" style="border: solid 1px blue; "></div>
+                <!-- #rightSplitterContainer-->
+            </div>
+            <!-- #rightPane --></div>
+
+        <!-- #splitterContainer -->
+
+
     </div>
 
-</wij-splitter>
+</div>
+
+<!--<div id="footer">-->
+<!--Website Footer -> Copyright and all that junk.-->
+<!--</div>-->
+
+<div style="clear: both;"></div>
+</div>
 
 
-<br>
-<!--diagram controller-->
-<div ng-controller="DiagramCtrl" style="width:100%"> <span id="paletteSpan">
-     <ul>
-         <li ng-repeat="node in nodes">{{node.text}}</li>
-     </ul>
-  <div >
-      <br>
-      <!--zippy-->
-      <zippy > <div type="button" class="btn btn-primary" ng-click="toggleContent()">Search Panel</div>
-          <div  ng-show="isContentVisible">
-              <!--search box-->
-              <search></search>
-
-              <span>{{searchText}}</span>
-
-              <ul class="unstyled">
-                  <li ng-repeat="item in list | filter: searchText"> <span class="">{{item.text | uppercase}} - {{item.des | lowercase}}</span>
-
-                  </li>
-              </ul>
-          </div>
-      </zippy>
-      <!--end of zippy-->
-  </div>
-
-
-
-
-
-
-    <span id="diagramSpan">
-    <!--Editor-->
-    <!--<div autofocus placeholder="Editor \ s area...." id="infobar"   style="border: solid 1px gray;overflow:scroll " wrap="SOFT" >-->
-    <!--<tabhistory></tabhistory>-->
-    <!--<ng-view></ng-view>-->
-    <div id="leftspan" style="overflow:scroll" >
-
-    </div>
-
-    <!--Diagram-->
-    <div  style="border: solid 1px gray; "></div>
-
-
-   </span>
-
-
-<br/>
-
-<!--save board-->
-
-
-
-
+</body>
 </html>
-<!-- <div style="border: 1px solid gray; padding: 10px; margin-bottom: 20px; -moz-border-radius: 10px; -webkit-border-radius: 10px;">
-Width: <input id="widthInput" value="700" />
-Height: <input id="heightInput" value="960" />
-<!-- Color: <input  id="ColorInput" type="color"/> -->
-<!-- button id="makeImages">Generate img for printing</button>
-</div>
-<div id="myImages">
-</div> -->
+
 
 <!-- jQuery -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js" type="text/javascript"></script>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/jquery-ui.min.js" type="text/javascript"></script>
-<!-- Wijmo CSS and script -->
-
-<link href="http://cdn.wijmo.com/themes/aristo/jquery-wijmo.css" rel="stylesheet" title="metro-jqueryui" type="text/css" />
-<link href="http://cdn.wijmo.com/jquery.wijmo-pro.all.3.20132.8.min.css" rel="stylesheet" type="text/css" />
-
-<script src="http://cdn.wijmo.com/jquery.wijmo-open.all.3.20132.8.min.js" type="text/javascript"></script>
-<script src="http://cdn.wijmo.com/jquery.wijmo-pro.all.3.20132.8.min.js" type="text/javascript"></script>
 
 <!-- Angular -->
-<!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular.min.js"></script>-->
+<!--<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.js"></script>-->
+
 <script src="js/Vendors/angular.js"></script>
-<script src="http://cdn.wijmo.com/interop/angular.wijmo.3.20132.8.min.js"></script>
+<!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>-->
+
 
 <!--include JavaScript files -->
 <!--Vendors-->
@@ -442,51 +538,101 @@ Height: <input id="heightInput" value="960" />
 <script type="text/javascript" src="js/Vendors/SerpentineLayout.js"></script>
 <script type="text/javascript" src="js/Vendors/GuidedDraggingTool.js"></script>
 
+<!--Semantic ui-->
+<script type="text/javascript" src="js/Vendors/semantic.js"></script>
 
+<!--splitter -->
+<script type="text/javascript" src="js/Vendors/splitter.js"></script>
 
+<!--spectrum-->
+<script type="text/javascript" src="js/Vendors/Spectrum.js"></script>
+
+<script type="text/javascript" src="js/Vendors/tinymce.min.js"></script>
+<!--<script src="//tinymce.cachefly.net/4.0/tinymce.min.js"></script>-->
 
 <!--Diagram app-->
 <script type="text/javascript" src="js/Vendors/MongoLabModule.js"></script>
 <script type="text/javascript" src="app.js"></script>
+<!--angular services        -->
 <script type="text/javascript" src="js/services/DiagramService.js"></script>
 <script type="text/javascript" src="js/services/RunTimeService.js"></script>
 <script type="text/javascript" src="js/services/NodesService.js"></script>
+<script type="text/javascript" src="js/services/MongoService.js"></script>
+<!--angular directives        -->
 <script type="text/javascript" src="js/directives/Directives.js"></script>
+<!--angular controllers        -->
 <script type="text/javascript" src="js/controllers/ButtonController.js"></script>
 <script type="text/javascript" src="js/controllers/DiagramController.js"></script>
 <script type="text/javascript" src="js/controllers/navigationBarController.js"></script>
 <script type="text/javascript" src="js/controllers/tabController.js"></script>
+<script type="text/javascript" src="js/controllers/SideBarController.js"></script>
 
-<script type="text/ng-template" id="myModalContent.html">
-    <div class="modal-header">
-        <h3>I'm a modal!</h3>
-    </div>
-    <div class="modal-body">
-        <ul>
-            <li ng-repeat="item in items">
-                <a ng-click="selected.item = item">{{ item }}</a>
-            </li>
-        </ul>
-        Selected: <b>{{ selected.item }}</b>
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="ok()">OK</button>
-        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-    </div>
-</script>
+
+
+
+
 <script>
-$(function() {
-$( "#openDocument" ).draggable();
-});
+    $(function () {
+        $("#openDocument").draggable();
+    });
 
-$(function() {
-    $( "#removeDocument" ).draggable();
-});
+    $(function () {
+        $("#removeDocument").draggable();
+    });
 
-$(function() {
-    $( "#importDocument" ).draggable();
-});
+    $(function () {
+        $("#importDocument").draggable();
+    });
+    //    tinymce.init({selector:'textarea'});
+
+
+</script>
+<script src="https://togetherjs.com/togetherjs-min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#splitterContainer").splitter({minAsize: 300,maxAsize: 700,  splitVertical: true, A: $('#leftPane'), B: $('#rightPane'), slave: $("#rightSplitterContainer"), closeableto: 20});
+        //  $("#rightSplitterContainer").splitter({splitHorizontal: true, A: $('#rightTopPane'), B: $('#rightBottomPane'), closeableto: 100});
+    });
+
+    $(function () {
+        $("#accordion")
+                .accordion({
+                    header: "> div > h3", collapsible: true, heightStyle: "fill"
+                })
+                .sortable({
+                    axis: "y",
+                    handle: "h3",
+                    stop: function (event, ui) {
+                        // IE doesn't register the blur when sorting
+                        // so trigger focusout handlers to remove .ui-state-focus
+                        ui.item.children("h3").triggerHandler("focusout");
+
+                    }
+                });
+
+
+
+    });
+
+
+
+    $('.ui .sidebar')
+            .sidebar('attach events', '.launch.button')
+    ;
+    $( "#tabs" ).tabs();
 
 
 
 </script>
+<script type="text/javascript">
+    tinymce.init({selector:'textarea'});
+</script>
+
+
+
+
+
+
+
+
+

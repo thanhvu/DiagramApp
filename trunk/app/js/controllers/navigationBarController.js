@@ -1,4 +1,4 @@
-app.controller('NavBarCtrl',['$scope','DiagramService','$modal','$log',function($scope,DiagramService,$modal,$log){
+app.controller('NavBarCtrl',['$scope','DiagramService','$modal','$log','mongoService',function($scope,DiagramService,$modal,$log,mongoService){
 
     $scope.myDiagram = DiagramService.getDiagram();
     myDiagram = DiagramService.getDiagram();
@@ -241,7 +241,7 @@ app.controller('NavBarCtrl',['$scope','DiagramService','$modal','$log',function(
     }
     $scope.saveTextAsFile = function()
     {
-        var textToWrite = document.getElementById("mySavedModel").value;
+        var textToWrite = myDiagram.model.toJson();//document.getElementById("mySavedModel").value;
         var textFileAsBlob = new Blob([textToWrite], {type:'text/plain'});
         var fileNameToSaveAs = "Diagram1"
 
@@ -308,22 +308,42 @@ app.controller('NavBarCtrl',['$scope','DiagramService','$modal','$log',function(
         myDiagram.model = go.Model.fromJson(str);
         myDiagram.undoManager.isEnabled = true;
     }
+    $scope.TemplateList=[];
+    $scope.OpenTemplate = function(){
+
+
+        $('.ui.modal.template')
+            .modal('setting', 'closable', false)
+            .modal('show')
+        mongoService.getTemplate().success(function(template){
+            $scope.TemplateList= template;
+            DiagramService.InitTemplate();
+        })
+
+
+
+    }
+    $scope.templateModel='';
+    $scope.LoadTemplateDiagram = function(){
+        str = $scope.templateModel;
+        DiagramService.getTemplateDiagram().model = go.Model.fromJson(str);
+        DiagramService.getTemplateDiagram().undoManager.isEnabled = true;
+        DiagramService.getTemplateDiagram().commandHandler.zoomToFit();
+        //alert($scope.templateModel.name)
+        DiagramService.getTemplateDiagram().isReadOnly= true,  // allow selection but not moving or copying or deleting
+        DiagramService.getTemplateDiagram().initialContentAlignment= go.Spot.Center
+
+
+
+    }
+    $scope.LoadChosenTemplate = function(){
+        str = $scope.templateModel;
+        DiagramService.getDiagram().model = go.Model.fromJson(str);
+        DiagramService.getDiagram().undoManager.isEnabled = true;
+
+    }
+
 
 }])
 
 
-var ModalInstanceCtrl = function ($scope, $modalInstance, items) {
-
-    $scope.items = items;
-    $scope.selected = {
-        item: $scope.items[0]
-    };
-
-    $scope.ok = function () {
-        $modalInstance.close($scope.selected.item);
-    };
-
-    $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
-    };
-};

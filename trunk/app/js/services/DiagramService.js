@@ -1,9 +1,24 @@
 
-
+var test;
 app.service("DiagramService",function(RuntimeService){
 
     var myDiagram , $$,Palette,DefaultPattern,myPartContextMenu,navigator,undoDisplay,model,myNodes,
-        BSPalette,FlowPalette,PflowPalette,FurPalette;
+        BSPalette,FlowPalette,PflowPalette,FurPalette,TemplateDiagram;
+
+    var infoSelected = document.getElementById("myInfoSelected");
+
+    var InfoNotSelected= document.getElementById("myInfoNotSelected");
+
+    var NodeCategory= document.getElementById("NodeCategory");
+    var NodeXLoc= document.getElementById("NodeXLoc");
+    var NodeYLoc= document.getElementById("NodeYLoc");
+    var NodeWidth = document.getElementById("NodeWidth");
+    var NodeHeight = document.getElementById("NodeHeight");
+    var NodeAngle = document.getElementById("NodeAngle");
+    var NodeScale = document.getElementById("NodeScale");
+
+
+
     var UnsavedFileName = "(Unsaved File)";
     // brushes for furniture structures
 
@@ -235,7 +250,7 @@ app.service("DiagramService",function(RuntimeService){
 
 
             // create a new "State" data object, positioned off to the right of the adorned Node
-            type= document.getElementById('defaultPattern').value;
+            type= "aggregator"//document.getElementById('defaultPattern').value;
             if (type!="")
             {
                 minInd=50;
@@ -942,13 +957,62 @@ app.service("DiagramService",function(RuntimeService){
 
 
     return {
+        changeCor: function(type,val){
+
+            if (type=="x")
+            {
+
+                myDiagram.startTransaction("move");
+                var node = myDiagram.selection.first();
+                node.location = new go.Point(parseInt(val),node.location.y)
+                myDiagram.commitTransaction("move");
+            }
+            else
+            {
+                myDiagram.startTransaction("move");
+                var node = myDiagram.selection.first();
+                node.location = new go.Point(node.location.x,parseInt(val));
+                myDiagram.commitTransaction("move");
+            }
+        },
+        changeWidth:function(width){
+            myDiagram.startTransaction("change width");
+            var node = myDiagram.selection.first();
+            var shape = elem.findObject("shape");
+            //shape.width = parseInt(width)
+            node.actualBounds.width=parseInt(width);
+            myDiagram.commitTransaction("change width");
+        },
+        changeHeight:function(height){
+            myDiagram.startTransaction("change height");
+            var node = myDiagram.selection.first();
+            var shape = elem.findObject("shape");
+            shape.height = parseInt(height)
+            myDiagram.commitTransaction("change height");
+        },
         getDiagram : function(){
            return myDiagram
 
        },
+        getBSPalette: function(){
+            return BSPalette;
+            FlowPalette,PflowPalette,FurPalette;
+        },
+        getFlowPalette: function(){
+            return FlowPalette;
+        },
+        getPflowPalette: function(){
+            return PflowPalette;
+        },
+        getFurPalette: function(){
+            return FurPalette;
+        },
         getNodeArray : function(){
            return myNodes;
        },
+        getTemplateDiagram: function(){
+            return TemplateDiagram;
+        },
         getPalette : function(){
            return Palette;
        },
@@ -974,13 +1038,21 @@ app.service("DiagramService",function(RuntimeService){
 
 
 
-           myNodes = new NodeArray();
-//           myNodes = nodes;
-           DefaultPattern= myNodes[0]
+//           myNodes = new NodeArray();
+           myNodes = nodes;
+
+           DefaultPattern= {category: "pic", text: "aggregator",img: "img/aggregator.png",des:"Used to combine a number of messages together into a single message"};
            myPartContextMenu = new partContextMenu($$,DefaultPattern)
            navigator= new go.Overview("navigator")
            navigator.observed = myDiagram
        },
+        InitTemplate: function(){
+            TemplateDiagram = new go.Diagram("template")  // create a Diagram for the DIV HTML element
+            TemplateDiagram.nodeTemplateMap = myDiagram.nodeTemplateMap;  // share the templates used by myDiagram
+            TemplateDiagram.linkTemplate= myDiagram.linkTemplate;
+            TemplateDiagram.layout = new go.Layout();
+
+        },
         textManipulation: function (feature){
         var sel = myDiagram.selection;
         if(sel.count === 0){
@@ -1041,6 +1113,9 @@ app.service("DiagramService",function(RuntimeService){
         myDiagram.model.undoManager.isEnabled = true;
         myDiagram.isModified = false;
         currentFile.innerHTML = UnsavedFileName;
+//        infoSelected.style.visibility = "hidden";
+//        InfoNotSelected.style.visibility = "visible";
+
     },
 
         LocalStorage : function(){
@@ -1107,20 +1182,21 @@ app.service("DiagramService",function(RuntimeService){
                 // The Node.location comes from the "loc" property of the node data,
                 // If the Node.location is changed, it updates the "loc" property of the node data,
                 new go.Binding("location", "loc").makeTwoWay(),
-                { locationSpot: go.Spot.Center, isShadowed: true },
-                //{ resizable: true },{ rotatable: true},
+                { locationSpot: go.Spot.Center, isShadowed: false },
+                { resizable: true },{ rotatable: true},
                 { mouseEnter: function(e, obj) { showPorts(obj.part, true); },
                     mouseLeave: function(e, obj) { showPorts(obj.part, false); } },
                 // the main object is a Panel that surrounds a picture over a TextBlock with a rectangular Shape
                 $$(go.Panel, go.Panel.Auto,
                     $$(go.Shape,
-                        {name: "shape", fill:greengrad },new go.Binding("figure","figure").makeTwoWay()
+                        {name: "shape", fill:mainColor },new go.Binding("figure","figure").makeTwoWay()
                         ,new go.Binding("fill","fill")
                     ),
                     $$(go.TextBlock,
-                        {  margin: 5, text: "text",name:"text",
+                        {
+                            margin: 5, text: "text",name:"text",
                             font: "bold 9pt Helvetica, Arial, sans-serif", editable: true ,isMultiline: false,
-                            stroke: "rgb(190, 247, 112)" },new go.Binding("text","text")
+                            stroke:lightText },new go.Binding("text","text")
                     )),
 
                 // four named ports, one on each side:
@@ -1142,6 +1218,7 @@ app.service("DiagramService",function(RuntimeService){
         myDiagram.nodeTemplateMap.add("pic",
             $$(go.Node,
                 go.Panel.Spot,{ locationSpot: go.Spot.Center, isShadowed: false},new go.Binding("location", "loc").makeTwoWay(),
+                { resizable: true },{ rotatable: true},
                 // { fromSpot: go.Spot.Right, toSpot: go.Spot.Left },
                 { mouseEnter: function(e, obj) { showPorts(obj.part, true); },
                     mouseLeave: function(e, obj) { showPorts(obj.part, false); } },
@@ -1150,7 +1227,7 @@ app.service("DiagramService",function(RuntimeService){
                         $$(go.Shape,
                             {name: "shape", fill:"white",stroke: "white",desiredSize: new go.Size(50, 50),
                                 portId: "C",fromLinkable: true, toLinkable: true
-                            }),
+                            },new go.Binding("figure","figure").makeTwoWay()),
                         $$(go.Picture,
                             {row: 0, column: 0 },new go.Binding("source", "img"))
                         ,
@@ -1189,15 +1266,15 @@ app.service("DiagramService",function(RuntimeService){
             ));
         // Define another node template : comment
         myDiagram.nodeTemplateMap.add("Comment",
-            $$(go.Node, go.Panel.Spot,{ locationSpot: go.Spot.Center, isShadowed: false},
+            $$(go.Node, go.Panel.Spot,{ locationSpot: go.Spot.Center, isShadowed: false},{ resizable: true },{ rotatable: true},
                 new go.Binding("location", "loc").makeTwoWay(),
                 { mouseEnter: function(e, obj) { showPorts(obj.part, true); },
                     mouseLeave: function(e, obj) { showPorts(obj.part, false); } },
                 $$(go.Shape, "Ellipse",
-                    { fill: yellowgrad ,desiredSize: new go.Size(120, 50)},
+                    { fill: yellowgrad,name: "shape", desiredSize: new go.Size(120, 50)},
                     new go.Binding("figure", "figure")),
                 $$(go.TextBlock,
-                    { margin: 4,
+                    { margin: 4,name:"text",
                         maxSize: new go.Size(100, NaN),
                         wrap: go.TextBlock.WrapFit,
                         textAlign: "center",
@@ -1215,81 +1292,70 @@ app.service("DiagramService",function(RuntimeService){
                             new go.Binding("text", "", nodeInfo))),
                     contextMenu: partContextMenu }
             ));
-        // Define another node template : Shape
-//        myDiagram.nodeTemplateMap.add("basicShape",
-//            $$(go.Node, "Vertical",
-//                {
-//                    locationSpot: go.Spot.Center, locationObjectName: "SHAPE",
-//                    selectionAdorned: false,  // no selection handle when selected
-//                    resizable: true, resizeObjectName: "SHAPE",  // user can resize the Shape
-//                    rotatable: true, rotateObjectName: "SHAPE",  // user can rotate the Shape without rotating the label
-//                    layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized  // don't re-layout when node changes size
-//                },
-//                $$(go.Shape,new go.Binding("figure","figure"),
-//                    {
-//                        name: "SHAPE",  // named so that the above properties can refer to this particular GraphObject
-//                          // the name of the Shape figure, which automatically gives the Shape a Geometry
-//                        width: 50, height: 50,
-//                        fill: graybrush, strokeWidth: 2
-//                    }),
-//                $$(go.TextBlock,  // the label
-//                     new go.Binding("text","text") )
-//            ));
-        myDiagram.nodeTemplateMap.add("basicShape",  // the default category
-            $$(go.Node, "Spot", nodeStyle(),
-                // The Node.location comes from the "loc" property of the node data,
-                // converted by the Point.parse method.
-                // If the Node.location is changed, it updates the "loc" property of the node data,
-                // converting back using the Point.stringify method.
-                new go.Binding("location", "loc").makeTwoWay(),
-                // the main object is a Panel that surrounds a TextBlock with a rectangular Shape
-                $$(go.Panel, "Auto",
-                    $$(go.Shape, "Rectangle",
-                        { width: 50, height: 50,
-                        fill: graybrush, strokeWidth: 2},
-                        new go.Binding("figure", "figure")),
-                    $$(go.TextBlock,
-                        { font: "bold 11pt Helvetica, Arial, sans-serif",
-                            stroke: lightText,
-                            margin: 8,
-                            maxSize: new go.Size(160, NaN),
+        myDiagram.nodeTemplateMap.add("basicShape",
+                $$(go.Node, "Spot",new go.Binding("location", "loc").makeTwoWay(),
+                    { mouseEnter: function(e, obj) { showPorts(obj.part, true); },
+                        mouseLeave: function(e, obj) { showPorts(obj.part, false); } },
+                    {
+                        locationSpot: go.Spot.Center, locationObjectName: "SHAPE",
+                        selectionAdorned: false,  // no selection handle when selected
+                        resizable: true, resizeObjectName: "shape",  // user can resize the Shape
+                        rotatable: true, rotateObjectName: "shape",  // user can rotate the Shape without rotating the label
+                        layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized  // don't re-layout when node changes size
+                    },
+                    $$(go.Shape,
+                        {
+                            name: "shape",  // named so that the above properties can refer to this particular GraphObject
+                            //width: 50, height: 50,
+                            fill: graybrush, strokeWidth: 2
+                        },new go.Binding("figure", "figure")),
+                    $$(go.TextBlock,  // the label
+                        { name:"text",
+                            maxSize: new go.Size(100, NaN),
                             wrap: go.TextBlock.WrapFit,
-                            editable: true },
+                            textAlign: "center",
+                            editable: true,
+                            font: "bold 9pt Helvetica, Arial, sans-serif" },
+                        new go.Binding("text", "text").makeTwoWay()),
+                    makePort("T", go.Spot.Top, true, true),
+                    makePort("L", go.Spot.Left, true, true),
+                    makePort("R", go.Spot.Right, true, true),
+                    makePort("B", go.Spot.Bottom, true, true),
+                    $$(go.TextBlock,  // the label
+                        { name:"text",
+                            maxSize: new go.Size(100, NaN),
+                            wrap: go.TextBlock.WrapFit,
+                            textAlign: "center",
+                            editable: true,
+                            font: "bold 9pt Helvetica, Arial, sans-serif" },
                         new go.Binding("text", "text").makeTwoWay())
-                ),
-                // four named ports, one on each side:
-                makePort("T", go.Spot.Top, false, true),
-                makePort("L", go.Spot.Left, true, true),
-                makePort("R", go.Spot.Right, true, true),
-                makePort("B", go.Spot.Bottom, true, false)
-            ));
-
-        myDiagram.nodeTemplateMap.add("Start",
-            $$(go.Node, "Spot", nodeStyle(),
-                new go.Binding("location", "loc").makeTwoWay(),
-                $$(go.Panel, "Auto",
-                    $$(go.Shape, "Octagon",
-                        { minSize: new go.Size(40, 60), fill: startColor, stroke: null }),
-                    $$(go.TextBlock, "Start",
-                        { margin: 5,
-                            font: "bold 11pt Helvetica, Arial, sans-serif",
-                            stroke: lightText })
-                ),
-                // three named ports, one on each side except the top, all output only:
-                makePort("L", go.Spot.Left, true, false),
-                makePort("R", go.Spot.Right, true, false),
-                makePort("B", go.Spot.Bottom, true, false)
-            ));
+                ));
+            myDiagram.nodeTemplateMap.add("Start",
+                $$(go.Node, "Spot", nodeStyle(),
+                    new go.Binding("location", "loc").makeTwoWay(),{ resizable: true },{ rotatable: true},
+                   $$(go.Panel, "Auto",
+                        $$(go.Shape,
+                            { name:"shape",figure:"Octagon",minSize: new go.Size(40, 60), fill: startColor, stroke: null }),
+                        $$(go.TextBlock, "Start",
+                            { margin: 5,name:"text",
+                                font: "bold 11pt Helvetica, Arial, sans-serif",
+                                stroke: lightText })
+                    ),
+                    // three named ports, one on each side except the top, all output only:
+                    makePort("L", go.Spot.Left, true, false),
+                    makePort("R", go.Spot.Right, true, false),
+                    makePort("B", go.Spot.Bottom, true, false)
+                ));
 
         myDiagram.nodeTemplateMap.add("End",
             $$(go.Node, "Spot", nodeStyle(),
-                new go.Binding("location", "loc").makeTwoWay(),
+                new go.Binding("location", "loc").makeTwoWay(),{ resizable: true },{ rotatable: true},
                 $$(go.Panel, "Auto",
-                    $$(go.Shape, "Octagon",
-                        { minSize: new go.Size(40, 60), fill: endColor, stroke: null }),
+                    $$(go.Shape,
+                        { name: "shape",figure:"Octagon",minSize: new go.Size(40, 60), fill: endColor, stroke: null }),
                     $$(go.TextBlock, "End",
                         { margin: 5,
-                            font: "bold 11pt Helvetica, Arial, sans-serif",
+                            font: "bold 11pt Helvetica, Arial, sans-serif",name: "text",
                             stroke: lightText })
                 ),
                 // three named ports, one on each side except the bottom, all input only:
@@ -1300,9 +1366,9 @@ app.service("DiagramService",function(RuntimeService){
 
         myDiagram.nodeTemplateMap.add("Source",
             $$(go.Node, "Auto",
-                new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
-                $$(go.Shape, "RoundedRectangle",
-                    { fill: bluegrad,
+                new go.Binding("location", "loc").makeTwoWay(),{ resizable: true },{ rotatable: true},
+                $$(go.Shape,
+                    { fill: bluegrad, figure:"RoundedRectangle",name:"shape",
                         portId: "", fromLinkable: true, cursor: "pointer"  }),
                 $$(go.TextBlock, "Source", textStyle(),
                     new go.Binding("text", "text").makeTwoWay())
@@ -1311,8 +1377,8 @@ app.service("DiagramService",function(RuntimeService){
         myDiagram.nodeTemplateMap.add("DesiredEvent",
             $$(go.Node, "Auto",
                 new go.Binding("location", "loc", go.Point.parse).makeTwoWay(go.Point.stringify),
-                $$(go.Shape, "RoundedRectangle",
-                    { fill: greengrad, portId: "", toLinkable: true }),
+                $$(go.Shape,
+                    {name:"shape",figure:"RoundedRectangle", fill: greengrad, portId: "", toLinkable: true }),
                 $$(go.TextBlock, "Success!", textStyle(),
                     new go.Binding("text", "text").makeTwoWay())
             ));
@@ -1382,7 +1448,7 @@ app.service("DiagramService",function(RuntimeService){
                     { rotatable: true, rotateObjectName: "SHAPE" },
                     $$(go.Shape,
                         {
-                            name: "SHAPE",
+                            name: "shape",
                             // the following are default values;
                             // actual values may come from the node data object via data-binding
                             geometryString: "F1 M0 0 L20 0 20 20 0 20 z",
@@ -1398,7 +1464,11 @@ app.service("DiagramService",function(RuntimeService){
                         new go.Binding("desiredSize", "size", go.Size.parse).makeTwoWay(go.Size.stringify),
                         // can set the angle of this Node
                         new go.Binding("angle", "angle").makeTwoWay()
-                    )
+                    ),
+                    $$(go.TextBlock,
+                        { margin: 5, name:"text",
+                            font: "bold 11pt Helvetica, Arial, sans-serif",
+                            stroke: lightText })
                 ));
 
 
@@ -1429,9 +1499,60 @@ app.service("DiagramService",function(RuntimeService){
         LoadPalette : function ()
         {
         Palette.layout= $$(go.GridLayout,{ comparer: go.GridLayout.smartComparer });
-        Palette.layout.wrappingColumn = NaN;
-        Palette.layout.wrappingWidth=NaN;
-        Palette.nodeTemplateMap = myDiagram.nodeTemplateMap;  // share the templates used by myDiagram
+        Palette.layout.wrappingColumn = 2;
+//        Palette.layout.wrappingWidth=NaN;
+//            Palette.spacing = go.Size.parse(10);
+
+            //Define another node template name : pic
+            Palette.nodeTemplateMap.add("pic",
+                $$(go.Node,
+                    go.Panel.Spot,{ locationSpot: go.Spot.Center, isShadowed: false},new go.Binding("location", "loc").makeTwoWay(),
+
+                    // { fromSpot: go.Spot.Right, toSpot: go.Spot.Left },
+                    { mouseEnter: function(e, obj) { showPorts(obj.part, true); },
+                        mouseLeave: function(e, obj) { showPorts(obj.part, false); } },
+                    $$(go.Panel, go.Panel.Table,
+                        $$(go.Panel,go.Panel.Table,
+                            $$(go.Shape,
+                                {name: "shape", fill:"white",stroke: "white",desiredSize: new go.Size(50, 50),
+                                    portId: "C",fromLinkable: true, toLinkable: true
+                                },new go.Binding("figure","figure").makeTwoWay()),
+                            $$(go.Picture,
+                                {row: 0, column: 0 },new go.Binding("source", "img"))
+                            ,
+                            makePort("T", go.Spot.Top, true, true),
+                            //makePort("C", go.Spot.Center, true, true),
+                            makePort("L", go.Spot.Left, true, true),
+                            makePort("R", go.Spot.Right, true, true),
+                            makePort("B", go.Spot.Bottom, true, true)
+                        ),
+                        $$(go.TextBlock,
+                            {column:0,row:1,editable: true,isMultiline: false, textAlign: "center", name:"text",
+                                font: "bold 9pt Helvetica, Arial, sans-serif"},new go.Binding("text", "text").makeTwoWay()),
+                        $$(go.TextBlock,
+                            {column:0,row:2,editable: true,isMultiline: true, textAlign: "center", name:"text",
+                                font: "bold 9pt Helvetica, Arial, sans-serif"},new go.Binding("text", "text2").makeTwoWay())
+                    ),
+
+                    // three named ports, one on each side except the top, all output only:
+
+
+                    { toolTip:
+                        $$(go.Adornment, go.Panel.Auto,
+                            $$(go.Shape, { fill: "#FFFFCC" }),
+                            $$(go.TextBlock, { margin: 4 },  // the tooltip shows the result of calling nodeInfo(data)
+                                new go.Binding("text", "", nodeInfo))),
+                        contextMenu: partContextMenu },
+
+                    { selectionAdornmentTemplate:
+                        $$(go.Adornment, go.Panel.Spot,
+                            $$(go.Panel, go.Panel.Auto,
+                                // this Adornment has a rectangular blue Shape around the selected node
+                                $$(go.Shape, { fill: null, stroke: "dodgerblue", strokeWidth: 3 }),
+                                $$(go.Placeholder))
+
+                        ) }
+                ));
         Palette.groupTemplate = myDiagram.groupTemplate;
         // specify the contents of the Palette
         Palette.model = new go.GraphLinksModel(  // specify the contents of the Palette
@@ -1631,12 +1752,31 @@ app.service("DiagramService",function(RuntimeService){
             BSPalette.layout= $$(go.GridLayout,{ comparer: go.GridLayout.smartComparer });
             BSPalette.layout.wrappingColumn = NaN;
             BSPalette.layout.wrappingWidth=NaN;
-            BSPalette.nodeTemplateMap = myDiagram.nodeTemplateMap;  // share the templates used by myDiagram
+              // the default category
+
+                BSPalette.nodeTemplateMap.add("basicShape",
+                $$(go.Node, "Vertical",nodeStyle(),
+                    {
+                        locationSpot: go.Spot.Center, locationObjectName: "SHAPE",
+                        selectionAdorned: false,  // no selection handle when selected
+//                        resizable: true, resizeObjectName: "SHAPE",  // user can resize the Shape
+//                        rotatable: true, rotateObjectName: "SHAPE",  // user can rotate the Shape without rotating the label
+                        layoutConditions: go.Part.LayoutStandard & ~go.Part.LayoutNodeSized  // don't re-layout when node changes size
+                    },
+                    $$(go.Shape,
+                        { width: 50, height: 50, name:"shape",
+                            //figure:"Rectangle",
+                            fill: graybrush, strokeWidth: 2},
+                        new go.Binding("figure", "figure")),
+                    $$(go.TextBlock,  // the label
+                        { name:"text" },new go.Binding("text","text"))
+                ));
+
             BSPalette.groupTemplate = myDiagram.groupTemplate;
             var shapes=[];
             // for each kind of figure, create a Shape using that figure
             for (var k in go.Shape.FigureGenerators) {
-                instance ={category: "basicShape",figure: k}
+                instance ={category: "basicShape",figure: k, text : k}
 
                 shapes.push(instance)
 
@@ -1739,6 +1879,10 @@ app.service("DiagramService",function(RuntimeService){
 
 
         } ,
+        TemplateSetting: function(){
+
+        },
+
         LoadFreeHand : function(){
             // create drawing tool for myDiagram
             var tool = new FreehandDrawingTool();
@@ -1747,7 +1891,7 @@ app.service("DiagramService",function(RuntimeService){
             { stroke: "green", strokeWidth: 3 };
             // install as first mouse-down-tool
             myDiagram.toolManager.mouseDownTools.insertAt(0, tool);
-            LoadNodeTempForFreeHand();
+            liTempForFreeHand();
 
 
 
@@ -1789,9 +1933,9 @@ app.service("DiagramService",function(RuntimeService){
                         /* mouseDragEnter: domouseDragEnter */},
                     //when the link is not selected
                     $$(go.Shape,  //  the link shape
-                        { name: "LINKSHAPE", isPanelMain: true,stroke: "black", strokeWidth: 2,fill: "whitesmoke" },new go.Binding("stroke", "color").makeTwoWay()),
+                        { name: "linkshape", isPanelMain: true,stroke: "black", strokeWidth: 2,fill: "whitesmoke" },new go.Binding("stroke", "color").makeTwoWay()),
                     $$(go.Shape,  //  the arrowhead
-                        { name: "LINKSHAPE", toArrow: "Standard" },new go.Binding("stroke", "color").makeTwoWay()),
+                        { name: "arrowhead", toArrow: "Standard" },new go.Binding("stroke", "color").makeTwoWay()),
                     { toolTip:  //  define a tooltip for each link that displays its information
                         $$(go.Adornment, go.Panel.Auto,
                             $$(go.Shape, { fill: "#EFEFCC" }),
@@ -2070,35 +2214,352 @@ app.service("DiagramService",function(RuntimeService){
                });
 
        },
-
-
         addChangedListener : function (myDiagram){
             myDiagram.model.addChangedListener(function(e) {
 
                 if (e.change == go.ChangedEvent.Transaction
                     && (e.propertyName === "CommittedTransaction" || e.propertyName === "FinishedUndo" || e.propertyName === "FinishedRedo")) {
-                    document.getElementById("mySavedModel").textContent = myDiagram.model.toJson();
+                  //  document.getElementById("mySavedModel").textContent = myDiagram.model.toJson();
+                    elem = myDiagram.selection.first();
+                    if (elem instanceof go.Node)
+                    {
+                        NodeXLoc.value = elem.data.loc.x;
+                        NodeYLoc.value = elem.data.loc.y;
+                        NodeWidth.value = elem.actualBounds.width;
+                        NodeHeight.value = elem.actualBounds.height;
+                        shape = elem.findObject("shape")
+                        NodeWidth.value = shape.width;//elem.actualBounds.width;
+                        NodeHeight.value = shape.height//elem.actualBounds.height;
+                        NodeScale.value = shape.scale;
+                        NodeAngle.value = shape.angle;
+                    }
 
 
                 }
 
-
-
-                // Add entries into the log
-                var changes = e.toString();
-                if (changes[0] !== "*") changes = "  " + changes;
-    //            changedLog.innerHTML += changes + "<br/>"
-    //            changedLog.scrollTop = changedLog.scrollHeight;
-
-            });
+            })
         },
         ChangedSelection : function(){
             // notice whenever the selection may have changed
             myDiagram.addDiagramListener("ChangedSelection", function(e) {
-                enableAll();
+//                enableAll();
+                var sel = e.diagram.selection;
+                var str = "";
+                if (sel.count === 0) {
+                    str = "info here";
+//                    infoSelected.style.visibility = "hidden";
+//                    InfoNotSelected.style.visibility = "visible";
+                    str = "information here.";
+                    InfoNotSelected.innerHTML = str;
+
+
+                    return;
+                } else if (sel.count > 1) {
+                    str = sel.count + " objects selected.";
+//                    infoSelected.style.visibility = "hidden";
+//                    InfoNotSelected.style.visibility = "visible";
+                    str = sel.count + " objects selected.";
+                    InfoNotSelected.innerHTML = str;
+
+                    return;
+                }
+                // One object selected, display some information
+//                infoSelected.style.visibility = "visible";
+//                InfoNotSelected.style.visibility ="hidden" ;
+
+                var elem = sel.first();
+                if (elem instanceof go.Node)
+                {
+                    var shape = elem.findObject("shape");
+                    var txtblock = elem.findObject("text");
+                    str += "<h3>Selected Node:</h3>";
+//                if(shape.figure!==undefined){
+//
+//                    str += "<p>Figure: " + shape.figure + "</p>";
+//
+//                }
+//                if(shape.geometryString){
+//                    str += "<p>Geometry string: " + shape.geometryString + "</p>";
+//
+//                }
+//                if(txtblock.text){
+//                    str += "<p>Text: " + txtblock.text + "</p>";
+//                }
+                    NodeCategory.innerHTML = str;
+                    NodeXLoc.value = elem.data.loc.x;
+                    NodeYLoc.value = elem.data.loc.y;
+                    NodeWidth.value = shape.width;//elem.actualBounds.width;
+                    NodeHeight.value = shape.height//elem.actualBounds.height;
+                    NodeScale.value = shape.scale;
+                    NodeAngle.value = shape.angle;
+                    var strokeColor = shape.stroke;
+                    // Initialize color picker
+                    $("#custom").spectrum({
+                        color: strokeColor,
+
+                        // Change colors by constructing a gradient
+                        move: function(color) {
+                            e.diagram.startTransaction("change stroke")
+                            var c = color.toRgb();
+                            var r,g,b;
+                            var grad1 = new go.Brush(go.Brush.Linear);
+                            r = Math.min(c.r + 10, 255);
+                            g = Math.min(c.g + 10, 255);
+                            b = Math.min(c.b + 10, 255);
+                            grad1.addColorStop(0, "rgb(" + r +","+ g +","+ b + ")");
+                            grad1.addColorStop(0.5, color.toRgbString());
+                            r = Math.max(c.r - 30, 0);
+                            g = Math.max(c.g - 30, 0);
+                            b = Math.max(c.b - 30, 0);
+                            grad1.addColorStop(1, "rgb(" + r +","+ g +","+ b+  ")");
+                            shape.fill = grad1;
+                            shape.stroke = "rgb(" + r +","+ g +","+ b+  ")";
+
+                            txtblock.stroke = (r < 100 && g < 100 && b < 100) ? "white" : "black";
+                            e.diagram.commitTransaction("change stroke")
+                        }
+                    });
+                    $("#linecustom").spectrum({
+                        color: strokeColor,
+
+                        // Change colors by constructing a gradient
+                        move: function(color) {
+                            e.diagram.startTransaction("change stroke")
+                            var c = color.toRgb();
+                            var r,g,b;
+                            var grad1 = new go.Brush(go.Brush.Linear);
+                            r = Math.min(c.r + 10, 255);
+                            g = Math.min(c.g + 10, 255);
+                            b = Math.min(c.b + 10, 255);
+                            grad1.addColorStop(0, "rgb(" + r +","+ g +","+ b + ")");
+                            grad1.addColorStop(0.5, color.toRgbString());
+                            r = Math.max(c.r - 30, 0);
+                            g = Math.max(c.g - 30, 0);
+                            b = Math.max(c.b - 30, 0);
+                            // grad1.addColorStop(1, "rgb(" + r +","+ g +","+ b+  ")");
+                            //shape.fill = grad1;
+                            shape.stroke = "rgb(" + r +","+ g +","+ b+  ")";
+
+                            txtblock.stroke = (r < 100 && g < 100 && b < 100) ? "white" : "black";
+                            e.diagram.commitTransaction("change stroke")
+                        }
+                    });
+                    $("#fillcustom").spectrum({
+                        color: strokeColor,
+
+                        // Change colors by constructing a gradient
+                        move: function(color) {
+                            e.diagram.startTransaction("change stroke")
+                            var c = color.toRgb();
+                            var r,g,b;
+                            var grad1 = new go.Brush(go.Brush.Linear);
+                            r = Math.min(c.r + 10, 255);
+                            g = Math.min(c.g + 10, 255);
+                            b = Math.min(c.b + 10, 255);
+                            grad1.addColorStop(0, "rgb(" + r +","+ g +","+ b + ")");
+                            grad1.addColorStop(0.5, color.toRgbString());
+                            r = Math.max(c.r - 30, 0);
+                            g = Math.max(c.g - 30, 0);
+                            b = Math.max(c.b - 30, 0);
+                            grad1.addColorStop(1, "rgb(" + r +","+ g +","+ b+  ")");
+                            shape.fill = grad1;
+                            // shape.stroke = "rgb(" + r +","+ g +","+ b+  ")";
+
+                            txtblock.stroke = (r < 100 && g < 100 && b < 100) ? "white" : "black";
+                            e.diagram.commitTransaction("change stroke")
+                        }
+                    });
+                    $("#backgroundcustom").spectrum({
+                        color: strokeColor,
+
+                        // Change colors by constructing a gradient
+                        move: function(color) {
+                            e.diagram.startTransaction("change stroke")
+                            var c = color.toRgb();
+                            var r,g,b;
+                            var grad1 = new go.Brush(go.Brush.Linear);
+                            r = Math.min(c.r + 10, 255);
+                            g = Math.min(c.g + 10, 255);
+                            b = Math.min(c.b + 10, 255);
+                            grad1.addColorStop(0, "rgb(" + r +","+ g +","+ b + ")");
+                            grad1.addColorStop(0.5, color.toRgbString());
+                            r = Math.max(c.r - 30, 0);
+                            g = Math.max(c.g - 30, 0);
+                            b = Math.max(c.b - 30, 0);
+                            //grad1.addColorStop(1, "rgb(" + r +","+ g +","+ b+  ")");
+                            //shape.fill = grad1;
+                            // shape.stroke = "rgb(" + r +","+ g +","+ b+  ")";
+                            shape.background ="rgb(" + r +","+ g +","+ b+  ")";
+
+                            txtblock.stroke = (r < 100 && g < 100 && b < 100) ? "white" : "black";
+                            e.diagram.commitTransaction("change stroke")
+                        }
+                    });
+
+                }
+
             });
         },
+        SelectionMoved: function(){
+            myDiagram.addDiagramListener("SelectionMoved", function(e){
+                var sel = e.diagram.selection;
+                var str = "";
+                if (sel.count === 0) {
+                    str = "info here";
+//                    infoSelected.style.visibility = "hidden";
+//                    InfoNotSelected.style.visibility = "visible";
+                    str = "information here.";
+                    InfoNotSelected.innerHTML = str;
 
+
+                    return;
+                } else if (sel.count > 1) {
+                    str = sel.count + " objects selected.";
+//                    infoSelected.style.visibility = "hidden";
+//                    InfoNotSelected.style.visibility = "visible";
+                    str = sel.count + " objects selected.";
+                    InfoNotSelected.innerHTML = str;
+
+                    return;
+                }
+                // One object selected, display some information
+//                infoSelected.style.visibility = "visible";
+//                InfoNotSelected.style.visibility ="hidden" ;
+
+                var elem = sel.first();
+                if (elem instanceof go.Node)
+                {
+                    var shape = elem.findObject("shape");
+                    var txtblock = elem.findObject("text");
+
+                    str += "<h3>Selected Node:</h3>";
+//                if(shape.figure){
+//
+//                    str += "<p>Figure: " + shape.figure + "</p>";
+//
+//                }
+//                if(shape.geometryString){
+////                    str += "<p>Geometry string: " + shape.geometryString + "</p>";
+//
+//                }
+//                if(txtblock.text){
+//                    str += "<p>Text: " + txtblock.text + "</p>";
+//                }
+                    NodeCategory.innerHTML = str;
+
+                    NodeXLoc.value =elem.data.loc.x;
+                    NodeYLoc.value =elem.data.loc.y;
+                    NodeWidth.value = elem.actualBounds.width;
+                    NodeHeight.value = elem.actualBounds.height;
+                    NodeScale.value = shape.scale;
+                    NodeAngle.value = shape.angle;
+                    var strokeColor = shape.stroke;
+                    // Initialize color picker
+                    $("#custom").spectrum({
+                        color: strokeColor,
+
+                        // Change colors by constructing a gradient
+                        move: function(color) {
+                            e.diagram.startTransaction("change stroke")
+                            var c = color.toRgb();
+                            var r,g,b;
+                            var grad1 = new go.Brush(go.Brush.Linear);
+                            r = Math.min(c.r + 10, 255);
+                            g = Math.min(c.g + 10, 255);
+                            b = Math.min(c.b + 10, 255);
+                            grad1.addColorStop(0, "rgb(" + r +","+ g +","+ b + ")");
+                            grad1.addColorStop(0.5, color.toRgbString());
+                            r = Math.max(c.r - 30, 0);
+                            g = Math.max(c.g - 30, 0);
+                            b = Math.max(c.b - 30, 0);
+                            grad1.addColorStop(1, "rgb(" + r +","+ g +","+ b+  ")");
+                            shape.fill = grad1;
+                            shape.stroke = "rgb(" + r +","+ g +","+ b+  ")";
+
+                            txtblock.stroke = (r < 100 && g < 100 && b < 100) ? "white" : "black";
+                            e.diagram.commitTransaction("change stroke")
+                        }
+                    });
+                    $("#linecustom").spectrum({
+                        color: strokeColor,
+
+                        // Change colors by constructing a gradient
+                        move: function(color) {
+                            e.diagram.startTransaction("change stroke")
+                            var c = color.toRgb();
+                            var r,g,b;
+                            var grad1 = new go.Brush(go.Brush.Linear);
+                            r = Math.min(c.r + 10, 255);
+                            g = Math.min(c.g + 10, 255);
+                            b = Math.min(c.b + 10, 255);
+                            grad1.addColorStop(0, "rgb(" + r +","+ g +","+ b + ")");
+                            grad1.addColorStop(0.5, color.toRgbString());
+                            r = Math.max(c.r - 30, 0);
+                            g = Math.max(c.g - 30, 0);
+                            b = Math.max(c.b - 30, 0);
+                            // grad1.addColorStop(1, "rgb(" + r +","+ g +","+ b+  ")");
+                            //shape.fill = grad1;
+                            shape.stroke = "rgb(" + r +","+ g +","+ b+  ")";
+
+                            txtblock.stroke = (r < 100 && g < 100 && b < 100) ? "white" : "black";
+                            e.diagram.commitTransaction("change stroke")
+                        }
+                    });
+                    $("#fillcustom").spectrum({
+                        color: strokeColor,
+
+                        // Change colors by constructing a gradient
+                        move: function(color) {
+                            e.diagram.startTransaction("change stroke")
+                            var c = color.toRgb();
+                            var r,g,b;
+                            var grad1 = new go.Brush(go.Brush.Linear);
+                            r = Math.min(c.r + 10, 255);
+                            g = Math.min(c.g + 10, 255);
+                            b = Math.min(c.b + 10, 255);
+                            grad1.addColorStop(0, "rgb(" + r +","+ g +","+ b + ")");
+                            grad1.addColorStop(0.5, color.toRgbString());
+                            r = Math.max(c.r - 30, 0);
+                            g = Math.max(c.g - 30, 0);
+                            b = Math.max(c.b - 30, 0);
+                            grad1.addColorStop(1, "rgb(" + r +","+ g +","+ b+  ")");
+                            shape.fill = grad1;
+                            // shape.stroke = "rgb(" + r +","+ g +","+ b+  ")";
+
+                            txtblock.stroke = (r < 100 && g < 100 && b < 100) ? "white" : "black";
+                            e.diagram.commitTransaction("change stroke")
+                        }
+                    });
+                    $("#backgroundcustom").spectrum({
+                        color: strokeColor,
+
+                        // Change colors by constructing a gradient
+                        move: function(color) {
+                            e.diagram.startTransaction("change stroke")
+                            var c = color.toRgb();
+                            var r,g,b;
+                            var grad1 = new go.Brush(go.Brush.Linear);
+                            r = Math.min(c.r + 10, 255);
+                            g = Math.min(c.g + 10, 255);
+                            b = Math.min(c.b + 10, 255);
+                            grad1.addColorStop(0, "rgb(" + r +","+ g +","+ b + ")");
+                            grad1.addColorStop(0.5, color.toRgbString());
+                            r = Math.max(c.r - 30, 0);
+                            g = Math.max(c.g - 30, 0);
+                            b = Math.max(c.b - 30, 0);
+                            //grad1.addColorStop(1, "rgb(" + r +","+ g +","+ b+  ")");
+                            //shape.fill = grad1;
+                            // shape.stroke = "rgb(" + r +","+ g +","+ b+  ")";
+                            shape.background ="rgb(" + r +","+ g +","+ b+  ")";
+
+                            txtblock.stroke = (r < 100 && g < 100 && b < 100) ? "white" : "black";
+                            e.diagram.commitTransaction("change stroke")
+                        }
+                    });
+
+                }
+            })
+        },
         mouseDrop : function(RuntimeService,myDiagram)
         {
             myDiagram.mouseDrop= function (e){
@@ -2215,8 +2676,6 @@ app.service("DiagramService",function(RuntimeService){
                undoDisplay.model = undoModel;
 
            },
-
-
         mouseDragOver : function(RuntimeService,myDiagram){ myDiagram.mouseDragOver=function(e){
             THRESHOLD = 12500;
             doc = e.documentPoint;
@@ -2344,10 +2803,16 @@ app.service("DiagramService",function(RuntimeService){
 
 
 
-        }}
-
-
-
+        }},
+        LinkDraw: function(){
+            // make link labels visible if coming out of a "conditional" node
+            myDiagram.addDiagramListener("LinkDrawn", function(e) {
+                if (e.subject.fromNode.data.figure === "Diamond") {
+                    var label = e.subject.findObject("LABEL");
+                    if (label !== null) label.visible = true;
+                }
+            })
+        }
     }
 
 

@@ -1,13 +1,16 @@
-app.controller("DiagramCtrl",['$scope','DiagramService','RuntimeService','Node',function ($scope,DiagramService,RuntimeService,Node){
+app.controller("DiagramCtrl",['$scope','DiagramService','RuntimeService','mongoService',function ($scope,DiagramService,RuntimeService,mongoService){
 
-    $scope.nodes = Node.query();
+//    $scope.nodes = Node.query();
+    mongoService.getEIPPalette().success(function(EIPNodes){
+        $scope.nodes = EIPNodes
+        DiagramService.Init($scope.nodes);
+        myDiagram = DiagramService.getDiagram();
+        myDiagram.isModified = false;
+        $$ = DiagramService.getGoMake();
+        Init();
+    });
 
-    DiagramService.Init($scope.nodes);
-    myDiagram = DiagramService.getDiagram();
-    myDiagram.isModified = false;
 
-    $$ = DiagramService.getGoMake();
-    Init();
 
     function Init()
     {
@@ -24,16 +27,25 @@ app.controller("DiagramCtrl",['$scope','DiagramService','RuntimeService','Node',
         DiagramService.LoadpFlowPalette()
         DiagramService.LoadFurPalette()
         DiagramService.LoadSettings()
+        DiagramService.ChangedSelection()
+        DiagramService.SelectionMoved()
       //  undoDisplay = DiagramService.getUndoDisplay();
         DiagramService.ExternalObjectsDroppedListener(RuntimeService, myDiagram)
-        //DiagramService.addChangedListener(myDiagram)
+        DiagramService.addChangedListener(myDiagram)
         DiagramService.mouseDrop(RuntimeService,myDiagram)
         DiagramService.mouseDragOver(RuntimeService,myDiagram)
 
         DiagramService.SetCustomLinkingTool()
         DiagramService.SetCustomPanningTool()
-
+        DiagramService.LinkDraw()
     }
+    $scope.ReLoad = function(){
+        DiagramService.getBSPalette().requestUpdate();
+        DiagramService.getFlowPalette().requestUpdate();
+        DiagramService.getPflowPalette().requestUpdate();
+        DiagramService.getFurPalette().requestUpdate();
+    }
+
 
     $scope.list = DiagramService.getNodeArray();
 //    $scope.type=""

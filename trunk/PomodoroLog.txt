@@ -1,5 +1,379 @@
+14 Dec (Sat)
+
+1st Pomodoro : refine chap 4 features
+2nd Pomodoro : refine chap 4 features
+3rd Pomodoro : refine chap 4 features
+4th Pomodoro : refine chap 4 features
+5th Pomodoro : refine chap 4 features
+6th Pomodoro : refine chap 4, cite, add figures
+7th Pomodoro : refine chap 4, cite, add figures
+8th Pomodoro : refine chap 4, cite, add figures
+9th Pomodoro : add citations
+10th Pomodoro : refine chap 5
+
+13 Dec (fri)
+
+1st Pomodoro : chap 5
+2nd Pomodoro : chap 5
+3rd Pomodoro : chap 5
+4th Pomodoro : chap 5
+5th Pomodoro : refine chap 3, cite, add figures
+6th Pomodoro : refine chap 3, cite, add figures
+7th Pomodoro : refine chap 3, cite, add figures
+8th Pomodoro : refine chap 3, cite, add figures
+9th Pomodoro : chap 5 refined
+10th Pomodoro : chap 5 refined
+
+
+12 Dec (thu)
+
+1st Pomodoro : chap 4- angularjs
+2nd Pomodoro : chap 4- angularjs
+3rd Pomodoro : chap 4- angularjs
+4th Pomodoro : chap 4 - gojs
+5th Pomodoro : chap 4 - gojs
+6th Pomodoro : chap 4 - gojs
+7th Pomodoro : add more figures
+8th Pomodoro : add more figures
+9th Pomodoro : chap 5
+10th Pomodoro : chap 5
+11st Pomodoro : chap 5
+12nd Pomodoro : chap 5
+
+11 Dec (wed)
+
+1st Pomodoro : add more figures
+2nd Pomodoro : add more figures
+3rd Pomodoro : chap 4 - front-end
+4th Pomodoro : chap 4 - front-end
+5th Pomodoro : chap 4 - front-end
+6th Pomodoro : chap 4 - front-end
+7th Pomodoro : add more figures
+8th Pomodoro : check citing
+9th Pomodoro : chap 4 - angularjs 
+10th Pomodoro: add figures
+11st Pomodoro: chap 4 - angularjs 
+12nd Pomodoro: chap 4 - angularjs 
+
+10 Dec (Tue)
+
+1st Pomodoro : chap 4 - features
+2nd Pomodoro : chap 4 - features
+3rd Pomodoro : chap 4 - features
+4th Pomodoro : chap 4 - features
+5th Pomodoro : chap 4 - features
+6th Pomodoro : chap 4 - features
+7th Pomodoro : chap 4 - features
+8th Pomodoro : Adding tables 
+9th Pomodoro : Adding tables 
+10th Pomodoro: citing for chap 4
+11st Pomodoro: chap 4- database
+12nd Pomodoro: chap 4- database
+13th Pomodoro: chap 4- database
+
+9 Dec (Mon)
+
+1st Pomodoro : chap 3 - Twitter boostrap
+2nd Pomodoro : chap 3 - Twitter boostrap
+3rd Pomodoro : chap 3 - JqueryUI
+4th Pomodoro : chap 3 - SemanticUI
+5th Pomodoro : chap 3 - HTML5
+6th Pomodoro : chap 3 - HTML5
+7th Pomodoro : chap 3 - css3
+8th Pomodoro : Adding tables 
+9th Pomodoro : Adding tables 
+10th Pomodoro: citing for chap 3
+
+8 Dec (Sun)
+
+1st Pomodoro : chap 3 - copy from doc
+2nd Pomodoro : chap 3 - copy from doc
+3rd Pomodoro : chap 3 - copy from doc
+4th Pomodoro : chap 3 - copy from doc
+5th Pomodoro : chap 3 - copy from doc
+6th Pomodoro : writing about Gojs
+7th Pomodoro : writing about Gojs
+8th Pomodoro : writing about Gojs
+9th Pomodoro : writing about Gojs
+10th Pomodoro: writing about Mongodb
+
+7 Dec (Sat)
+
+1st Pomodoro : writing graph library overview for each library
+2nd Pomodoro : writing graph library overview for each library
+3rd Pomodoro : writing graph library overview for each library
+4th Pomodoro : writing graph library overview for each library
+5th Pomodoro : writing graph library overview for each library
+6th Pomodoro : writing graph library overview for each library
+7th Pomodoro : writing graph library overview for each library
+8th Pomodoro : writing graph library overview for each library
+9th Pomodoro : writing graph library overview for each library
+10th Pomodoro: writing graph library overview for each library
+
+
+
+6 Dec (Fri)
+1st Pomodoro : Introduction
+2nd Pomodoro : Introduction
+3rd Pomodoro : Introduction
+4th Pomodoro : Chap 2 copy from doc
+5th Pomodoro : Chap 2 copy from doc
+6th Pomodoro : Chap 2 copy from doc
+7th Pomodoro : Chap 2 copy from doc
+8th Pomodoro : writing graph library survey
+9th Pomodoro : writing graph library survey
+10th Pomodoro: writing graph library survey
+11th Pomodoro: writing graph library survey
+12th Pomodoro: writing graph library survey
+
+23 Nov (Sat)
+
+1st Pomodoro : Read doc about Latex
+2nd Pomodoro : Read doc + setup Thesis 's document
+3rd Pomodoro : Read doc + setup Thesis 's document
+4th Pomodoro : Abstract
+5th Pomodoro : Abstract
+6th Pomodoro : Acknowledgement
+7th Pomodoro : Introduction
+8th Pomodoro : Introduction
+9th Pomodoro : Introduction
+10th Pomodoro: Introduction
+11th Pomodoro: Introduction
+12th Pomodoro: Introduction
+
+22 Nov (Fri)
+
+1st Pomodoro : try using another splitter of jquery
+2nd Pomodoro : try using another splitter of jquery
+3rd Pomodoro : try using another splitter of jquery
+4th Pomodoro : Fix auto load palette bugs
+5th Pomodoro : Fix auto load palette bugs
+6th Pomodoro : Fix auto load palette bugs
+7th Pomodoro : Fix auto load palette bugs
+8th Pomodoro : Using tabs for sidebar
+9th Pomodoro : Using tabs for sidebar
+10th Pomodoro: Using tabs for sidebar
+
+21 Nov (Thu)
+
+1st Pomodoro : load EIP palette from mongolab
+2nd Pomodoro : load EIP palette from mongolab
+3rd Pomodoro : Create menu template
+4th Pomodoro : setup html element for template loading
+5th Pomodoro : setup html element for template loading
+6th Pomodoro : load from template function
+7th Pomodoro : load from template function
+8th Pomodoro : load from template function
+9th Pomodoro : load from template function
+10th Pomodoro: setup new diagram
+
+
+20 Nov (Wed)
+1st Pomodoro : load EIP palette from mongolab
+2nd Pomodoro : load EIP palette from mongolab
+3rd Pomodoro : Create menu template
+4th Pomodoro : setup html element for template loading
+5th Pomodoro : setup html element for template loading
+6th Pomodoro : load from template function
+7th Pomodoro : load from template function
+8th Pomodoro : load from template function
+9th Pomodoro : load from template function
+10th Pomodoro: setup new diagram
+
+19 Nov (Tue)
+
+1st Pomodoro : Try saving node 'info to mongolab 
+2nd Pomodoro : Try saving node 'info to mongolab
+3rd Pomodoro : Try saving node 'info to mongolab
+4th Pomodoro : Try saving node 'info to mongolab
+5th Pomodoro : Try saving node 'info to mongolab
+6th Pomodoro : Try saving node 'info to mongolab
+7th Pomodoro : saving json using $http and url instead of $resource
+8th Pomodoro : saving json using $http and url instead of $resource
+9th Pomodoro : saving json using $http and url instead of $resource
+10th Pomodoro: saving json using $http and url instead of $resource
+
+18 Nov (Mon)
+
+1st Pomodoro : Set up mongo module wrapper to load node info
+2nd Pomodoro : Set up mongo module wrapper to load node info
+3rd Pomodoro : Set up mongo module wrapper to load node info
+4th Pomodoro : Set up mongo module wrapper to load node info
+5th Pomodoro : Set up mongo module wrapper to load node info
+6th Pomodoro : Read doc for mongolab api
+7th Pomodoro : Read doc for mongolab api
+8th Pomodoro : Read doc for mongolab api
+9th Pomodoro : Try saving node 'info to mongolab
+10th Pomodoro: Try saving node 'info to mongolab
+
+
+17 Nov (Sun)
+
+1st Pomodoro : Redifine all EIP for display W/H
+2nd Pomodoro : Redifine all EIP for display W/H 
+3rd Pomodoro : Redifine all basic shape for display W/H
+4th Pomodoro : Redifine all page flow for display W/H
+5th Pomodoro : Redifine all furniture for display W/H
+6th Pomodoro : Redifine all shapes for rotate & resize
+7th Pomodoro : Add Shapes for Basic shapes palette
+8th Pomodoro : Add Shapes for Basic shapes palette
+9th Pomodoro : Add Shapes for Basic shapes palette
+10th Pomodoro: Add Shapes for page flow palette
+11th Pomodoro: Add Shapes for flow chart palette
+12th Pomodoro: Add Shapes for furniture palette
+
+
+
+16 Nov (Sat)
+
+1st Pomodoro : Set up html element for node's width and height + css adjustment
+2nd Pomodoro : experiment Actual bounds attribute + ask forum
+3rd Pomodoro : experiment Actual bounds attribute + read doc
+4th Pomodoro : experiment Actual bounds attribute + read doc
+5th Pomodoro : experiment Actual bounds attribute + read doc
+6th Pomodoro : Display width & height of the node 
+7th Pomodoro : Update display when resize object
+8th Pomodoro : Update display when resize object
+9th Pomodoro : css for scroll bar
+10th Pomodoro: css for scroll bar
+
+
+15 Nov (Fri)
+
+1st Pomodoro : Change node 's location from input (error node is frozen)
+2nd Pomodoro : Change node 's location from input (error node is frozen)
+3rd Pomodoro : Change node 's location from input (error: problems with point constructor)
+4th Pomodoro : Change node 's location from input (error: problems with point constructor)
+5th Pomodoro : Fix: allow duplicate comments
+6th Pomodoro : Fix: css for leftpane of splitter
+7th Pomodoro : Change node 's location from input (error: problems with point constructor)
+8th Pomodoro : Change node 's location from input (error: problems with point constructor)
+9th Pomodoro : Update palette when resize
+10th Pomodoro: Update palette when resize
+11th Pomodoro: Update palette when resize
+12th Pomodoro: Update palette when resize
+
+14 Nov (Thu)
+
+1st Pomodoro : Change coordinate of a node function
+2nd Pomodoro : Read doc (gojs)
+3rd Pomodoro : Read doc (gojs)
+4th Pomodoro : Fix layout alignment
+5th Pomodoro : Fix layout alignment
+6th Pomodoro : Fix zooming to specific percentage
+7th Pomodoro : read and try to save to monglab using api & ngresource
+8th Pomodoro : read ng-resource
+9th Pomodoro : read ng-resource
+10th Pomodoro: Fixing palette for hidden shapes
+11th Pomodoro: redefine shape for palette & diagram
+
+
+13 Nov (Wed)
+1st Pomodoro : auto update node coordinate when selected changed
+2nd Pomodoro : auto update node coordinate when selected changed
+3rd Pomodoro : auto update node coordinate when selected changed
+4th Pomodoro : auto update node coordinate when selected changed
+5th Pomodoro : fix template for search particular node
+6th Pomodoro : create html element to display x, y
+7th Pomodoro : Setup comment for side bar with ng-submit
+8th Pomodoro : Setup comment for side bar with ng-submit
+9th Pomodoro : Try using ng-enter directive
+10th Pomodoro: Try using ng-enter directive
+11th Pomodoro: Try using ng-enter directive
+
+12 Nov (Tue)
+
+1st Pomodoro : Save comment locally
+2nd Pomodoro : Save comment locally
+3rd Pomodoro : Try saving to mongolab (read doc)
+4th Pomodoro : Try saving to mongolab (read doc)
+5th Pomodoro : option menu grid
+6th Pomodoro : option menu grid
+7th Pomodoro : option menu grid
+8th Pomodoro : option menu click creating
+9th Pomodoro : option menu click creating
+10th Pomodoro: option menu click creating
+11th Pomodoro: option menu click creating
+12th Pomodoro: option menu search enter then auto add node and connect
+
+11 Nov (Mon)
+
+1st Pomodoro : Try auto update coordinate of a node using model
+2nd Pomodoro : Try auto update coordinate of a node using model
+3rd Pomodoro : Try auto update coordinate of a node using model
+4th Pomodoro : Try auto update coordinate of a node using model
+5th Pomodoro : Try auto update coordinate of a node using model
+6th Pomodoro : Try auto update coordinate of a node using model
+7th Pomodoro : Add all template for search all palette
+8th Pomodoro : Add all template for search all palette
+9th Pomodoro : Add all template for search all palette
+10th Pomodoro: Save comment locally
+11th Pomodoro: Save comment locally
+12th Pomodoro: Save comment locally
+
+10 Nov (Sun)
+
+1st Pomodoro : Create Sidebar controller for handling comment
+2nd Pomodoro : Try using comment template of semantic ui
+3rd Pomodoro : Try using comment template of semantic ui
+4th Pomodoro : Display comment and create form to add comment
+5th Pomodoro : Add comment function
+6th Pomodoro : Try integrating angular and tinyMCE for note
+7th Pomodoro : Try integrating angular and tinyMCE for note
+8th Pomodoro : Try integrating angular and tinyMCE for note
+9th Pomodoro : Try integrating angular and tinyMCE for note
+10th Pomodoro: Try integrating angular and tinyMCE for note
+11th Pomodoro: Display coordinate of node on tooltip
+12th Pomodoro: Display coordinate of node on tooltip
+13th Pomodoro: Display coordinate of node on tooltip 
+14th Podomoro: Redefine template for loc attribute
+14th Podomoro: Redefine template for loc attribute
+
+9 Nov (Sat)
+
+1st Pomodoro : ReDefine template for all shapes for text name
+2nd Pomodoro : Fix spectrum board (link to the stroke)
+3rd Pomodoro : Fix spectrum board (link to the stroke)
+4th Pomodoro : Fix spectrum board (link to the stroke)
+5th Pomodoro : Auto update stroke when choosing color
+6th Pomodoro : Auto update stroke when choosing color
+7th Pomodoro : Auto update stroke when choosing color
+8th Pomodoro : Auto update stroke when choosing color
+9th Pomodoro : Redefine template for stroke
+10th Pomodoro: Redefine template for stroke
+11th Pomodoro: Redefine template for stroke
+
+
+8 Nov (Fri)
+
+1st Pomodoro : Change selection listener event
+2nd Pomodoro : Change selection listener event
+3rd Pomodoro : Selecting node (read doc)
+4th Pomodoro : Selecting node (read doc)
+5th Pomodoro : Display Shape and text info when a node is selected
+6th Pomodoro : Display Shape and text info when a node is selected
+7th Pomodoro : Display Shape and text info when a node is selected
+8th Pomodoro : Display Shape and text info when a node is selected
+9th Pomodoro : ReDefine template for all shapes for shape name and figure
+10th Pomodoro: ReDefine template for all shapes for shape name and figure
+11th Pomodoro: ReDefine template for all shapes for shape name and figure
+12th Pomodoro: ReDefine template for all shapes for shape name and figure
+
 7 Nov (Thu)
-1st Pomodoro :
+
+1st Pomodoro : Css modified, sidebar motion fixed
+2nd Pomodoro : make Diagram resized update, palette item display adjusment
+3rd Pomodoro : palette item display adjusment
+4th Pomodoro : palette item display adjusment
+5th Pomodoro : Accordion display adjusment
+6th Pomodoro : Set up Sidebar for node's property section
+7th Pomodoro : Set up html element for node 's info
+8th Pomodoro : Set up html element for node 's info
+9th Pomodoro : Set up html element for node 's info
+10th Pomodoro: Set up spectrum
+11th Pomodoro: Set up spectrum
+12th Pomodoro: Set up spectrum
+
 6 Nov (Wed)
 
 5 Nov (Tue)
