@@ -13,7 +13,7 @@ can only caught by GOJs's API
 - Some of the GoJs 's events still need to use global variables, i'm still trying to make these events work without using global variables. 
 
 - Trying to use modal( of bootstrap) as context menu of Gojs
-
+1
 
 
 
